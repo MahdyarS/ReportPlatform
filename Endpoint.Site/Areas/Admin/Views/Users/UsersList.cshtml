@@ -1,0 +1,27 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.UserServices.GetUsersService.GetUsersResultDto>
+@{
+    ViewData["Title"] = "UsersList";
+}
+
+@if(TempData["Message"] != "" && TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<h1>UsersList</h1>
+
+
+<table class="table">
+    @foreach(var item in Model.Data.UsersList)
+    {
+        <tr>
+            <td>@item.FName</td>
+            <td>@item.LName</td>
+            <td>@item.Position</td>
+            <td>@item.PhoneNumber</td>
+        </tr>
+    }
+</table>
+
