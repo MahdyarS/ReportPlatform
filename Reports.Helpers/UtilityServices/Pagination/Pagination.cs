@@ -10,18 +10,19 @@ namespace Reports.Helpers.UtilityServices.Pagination
     {
         public static PaginationResult<T> ToPaged<T>(this IEnumerable<T> source, int requestedPageIndex, int itemsInPageCount)
         {
-            var count = (double)source.Count();
-            var pageCount = (int)Math.Ceiling(count / itemsInPageCount);
+            double count = /*(double)*/source.Count();
+            var pagesCount = (int)Math.Ceiling(count / itemsInPageCount);
 
             if (count == 0)
                 return new PaginationResult<T>()
                 {
                     Succeeded = false,
                     Message = "آیتمی جهت نمایش موجود نیست!",
+                    PagesCount = 0
 
                 };
 
-            else if (requestedPageIndex < 0 || requestedPageIndex > pageCount)
+            else if (requestedPageIndex < 0 || requestedPageIndex > pagesCount)
             {
                 return new PaginationResult<T>()
                 {
@@ -35,12 +36,12 @@ namespace Reports.Helpers.UtilityServices.Pagination
             {
                 Succeeded = true,
                 RequestedPageList = source.Skip((requestedPageIndex - 1) * itemsInPageCount).Take(itemsInPageCount).ToList(),
-                PagesCount = source.Count() / itemsInPageCount
+                PagesCount = pagesCount
             };
 
             if (requestedPageIndex == 1)
                 result.PrevIsDiabled = true;
-            if (requestedPageIndex == pageCount)
+            if (requestedPageIndex == pagesCount)
                 result.NextIsDisabled = true;
 
             if (requestedPageIndex <= 5)
@@ -48,10 +49,10 @@ namespace Reports.Helpers.UtilityServices.Pagination
             else
                 result.FirstPageIndexToShow = requestedPageIndex - 4;
 
-            if (result.FirstPageIndexToShow + 8 <= pageCount)
+            if (result.FirstPageIndexToShow + 8 <= pagesCount)
                 result.LastPageIndexToShow = result.FirstPageIndexToShow + 8;
             else
-                result.LastPageIndexToShow = pageCount;
+                result.LastPageIndexToShow = pagesCount;
 
             return result;
 
@@ -59,7 +60,7 @@ namespace Reports.Helpers.UtilityServices.Pagination
         public class PaginationResult<T>
         {
             public List<T>? RequestedPageList { get; set; } = null;
-            public int PagesCount { get; set; }
+            public int PagesCount { get; set; } = 1;
             public bool Succeeded { get; set; }
             public string Message { get; set; }
             public bool PrevIsDiabled { get; set; }

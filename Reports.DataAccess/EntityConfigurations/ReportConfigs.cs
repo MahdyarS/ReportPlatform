@@ -13,7 +13,10 @@ namespace Reports.DataAccess.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Report> builder)
         {
+            builder.Property(p => p.FinishWorkTime).HasColumnType("time(1)");
+            builder.Property(p => p.StartWorkTime).HasColumnType("time(1)");
             builder.Property(p => p.Date).HasColumnType("date");
+
             return;
         }
     }

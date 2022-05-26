@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Services\InfrastructureServices\" />
-    <Folder Include="Services\ReportServices\" />
     <Folder Include="Services\UserServices\EmailConfirmationServices\" />
     <Folder Include="Services\UserServices\EditUserService\" />
     <Folder Include="Services\UserServices\ResetPasswordService\" />

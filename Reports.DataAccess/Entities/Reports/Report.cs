@@ -11,12 +11,13 @@ namespace Reports.DataAccess.Entities.Reports
     {
         public int ReportId { get; set; }
         public User User { get; set; }
+        public string UserId { get; set; }
+        public bool IsRemote { get; set; } = false;
         public DateTime Date { get; set; }
-        public byte StartWorkHour { get; set; }
-        public byte StartWorkMinute { get; set; }
-        public byte FinishWorkHour { get; set; }
-        public byte FinishWorkMinute { get; set; }
+        public TimeSpan StartWorkTime { get; set; }
+        public TimeSpan FinishWorkTime { get; set; }
         public string ReportsDetail { get; set; }
-        
+        public DateTime InsertionDateAndTime { get; set; }
+
     }
 }

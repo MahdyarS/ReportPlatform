@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reports.DataAccess.Contexts;
 
@@ -11,9 +12,10 @@ using Reports.DataAccess.Contexts;
 namespace Reports.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220519110101_adduserIdToReport")]
+    partial class adduserIdToReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,9 +136,6 @@ namespace Reports.DataAccess.Migrations
                     b.Property<DateTime>("InsertionDateAndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRemote")
-                        .HasColumnType("bit");
-
                     b.Property<string>("ReportsDetail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -176,15 +175,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "074d134d-1629-4d31-ad79-6fcdb9e2ec00",
-                            ConcurrencyStamp = "a49ab53e-a78d-4bf4-9551-d2f82e4259ab",
+                            Id = "254b8580-c544-475e-bddf-031cbfa8a35a",
+                            ConcurrencyStamp = "e61d8b88-b7bd-4fd8-90c6-4ad8141f0527",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0283e3e8-ee30-47bb-a4a1-8390a6ee7316",
-                            ConcurrencyStamp = "25c7afb4-dbb4-447b-8452-ce0bc1ab89f3",
+                            Id = "311f2819-4943-4fc0-9921-6de92e2eed16",
+                            ConcurrencyStamp = "b5a71829-11c5-478a-978f-527869214a22",
                             Name = "User",
                             NormalizedName = "USER"
                         });

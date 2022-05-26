@@ -1,0 +1,157 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.ReportServices.GetUserReportsListService.GetUsersReportsResultDto>
+
+@{
+    ViewData["Title"] = "GetOneUsersReports";
+}
+
+@if (String.IsNullOrEmpty(Model.Data?.UsersFirstName))
+{
+    <h1>گزارش ها</h1>
+    <div class="alert alert-danger mt-5">
+        @Model.Message
+    </div>
+}
+else
+{
+    <h1>لیست گزارش های @Model.Data.UsersFirstName @Model.Data.UsersLastName</h1>
+
+
+<div class="row">
+    <form asp-action="GetOneUsersReports">
+        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+        <input type="text" class="date form-control col-2" id="date" name="searchKeydate" />
+        <input type="hidden" name="userName" value="@Model.Data.UserName" />
+        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+    </form>
+</div>
+
+<div class="row">
+    جستجوی گزارش ها در بازه:
+    <form asp-action="GetOneUsersReports">
+        <label>از تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" />
+        <label>تا تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" />
+        <input type="hidden" name="userName" value="@Model.Data.UserName" />
+        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+    </form>
+</div>
+
+
+@if (!Model.Succeeded)
+{
+    <div class="alert alert-danger">
+        @Model.Message
+    </div>
+}
+else
+{
+    @if (Model.Data.SpecificDateisSearched)
+    {
+        <div class="alert alert-success">
+            نمایش گزارش در تاریخ: @Model.Data.RequestedSearchKeyDate
+        </div>
+    }
+    else if (Model.Data.PeriodIsSearched)
+    {
+        <div class="row d-flex justify-content-between alert alert-success">
+            <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
+            <div>مجموع ساعت کار در این بازه @Model.Data.TotalHoursWorkedInPeriod ساعت است</div>
+        </div>
+    }
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th scope="col">تاریخ</th>
+                <th scope="col">ساعت شروع کار</th>
+                <th scope="col">ساعت پایان کار</th>
+                <th scope="col">مجموع ساعت کار</th>
+                <th scope="col">حضوری/غیرحضوری</th>
+                <th scope="col" class="col-6">جزئیات گزارش</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+
+            @foreach (var item in Model.Data.ReportsList)
+            {
+                <tr>
+                    <td>@item.Date</td>
+                    <td>@item.StartWorkTime</td>
+                    <td>@item.FinishWorkTime</td>
+                    <td>@item.WorkTime</td>
+                    <td>@item.IsRemote</td>
+                    <td class="col-6">@item.ReportsDetail</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
+
+
+
+    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+        <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+            <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=1&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">اولین صفحه</a></li>
+
+
+            @if (Model.Data.PrevIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex-1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">صفحه قبلی</a></li>
+            }
+            @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+            {
+                if (i == Model.Data.RequestedPageIndex)
+                {
+                    <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@i&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">@i</a></li>
+                }
+            }
+            @if (Model.Data.NextIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex+1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">صفحه بعدی</a></li>
+            }
+
+            <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.PagesCount)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">آخرین صفحه</a></li>
+
+        </ul>
+    </nav>
+
+}
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+}
+}

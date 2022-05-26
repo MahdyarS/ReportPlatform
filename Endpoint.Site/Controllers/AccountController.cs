@@ -1,16 +1,19 @@
 ﻿using Endpoint.Site.Models.AccountControllerModels;
 using Microsoft.AspNetCore.Mvc;
 using Reports.Application.Services.UserServices.LoginService;
+using Reports.Application.Services.UserServices.LogoutService;
 
 namespace Endpoint.Site.Controllers
 {
     public class AccountController : Controller
     {
         private readonly ILoginService _loginService;
+        private readonly ILogoutService _logoutService;
 
-        public AccountController(ILoginService loginService)
+        public AccountController(ILoginService loginService, ILogoutService logoutService)
         {
             _loginService = loginService;
+            _logoutService = logoutService;
         }
 
         [Route("[action]")]
@@ -43,9 +46,10 @@ namespace Endpoint.Site.Controllers
         }
 
         [Route("[action]")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await _logoutService.Execute();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

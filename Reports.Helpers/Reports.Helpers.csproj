@@ -10,4 +10,8 @@
     <Folder Include="UtilityServices\UrlGeneratorServcice\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MD.PersianDateTime.Core" Version="2.3.5" />
+  </ItemGroup>
+
 </Project>

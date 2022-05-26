@@ -3,25 +3,211 @@
     ViewData["Title"] = "UsersList";
 }
 
-@if(TempData["Message"] != "" && TempData["Message"] != null)
+@if (TempData["Message"] != "" && TempData["Message"] != null)
 {
     <div class="alert alert-success">
         @TempData["Message"]
     </div>
 }
 
-<h1>UsersList</h1>
+<h1>لیست کاربران</h1>
+
+@if(TempData["Message"] != null && TempData["Message"] != "")
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<div class="p-3 col-12 bg-light shadow-lg mt-3 mb-5" dir="ltr">
+    <form action="UsersList" method="post">
+        <div class="input-group" dir="ltr">
+            <input id="key" name="searchkey" type="text" class="form-control" placeholder="نام یا ایمیل کاربر">
+            <input type="hidden" name="itemsInPage" value="" />
+            <button class="btn d-inline-flex align-items-center btn-outline-success" type="submit" id="search"><i class="bi bi-search mb-0"></i></button>
+        </div>
+    </form>
+</div>
+
+
+@if (!Model.Succeeded)
+{
+    <div class="alert alert-danger">
+        @Model.Message
+    </div>
+    return;
+}
+else if (Model.Data.RequestedSearchKey != "")
+{
+    <div class="success alert-success">
+        نمایش نتایج برای : @Model.Data.RequestedSearchKey
+    </div>
+
+}
+
 
 
 <table class="table">
-    @foreach(var item in Model.Data.UsersList)
-    {
+
+    <thead>
         <tr>
-            <td>@item.FName</td>
-            <td>@item.LName</td>
-            <td>@item.Position</td>
-            <td>@item.PhoneNumber</td>
+            <th scope="col">نام</th>
+            <th scope="col">نام خانوادگی</th>
+            <th scope="col">سمت شغلی</th>
+            <th scope="col">شماره تلفن</th>
+            <th scope="col"></th>
         </tr>
-    }
+    </thead>
+    <tbody class="table-group-divider">
+
+        @foreach (var item in Model.Data.UsersList)
+        {
+            <tr>
+                <td>@item.FName</td>
+                <td>@item.LName</td>
+                <td>@item.Position</td>
+                <td>@item.PhoneNumber</td>
+                <td>
+                    @*<button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#UserEditModal">جزئیات</button>*@
+                    
+                    <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UserName="@item.UserName"><button class="btn btn-info">گزارش ها</button></a>
+
+                    @if (item.IsDisabled)
+                    {
+                        <button class="btn btn-secondary disableInable toggle">فعال کردن</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-warning disableInable toggle">غیرفعال کردن</button>
+                    }
+
+                    <button class="btn btn-danger remove">حذف</button>
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
 </table>
+
+
+
+
+<nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+    <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+        <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=1">اولین صفحه</a></li>
+
+
+        @if (Model.Data.PrevIsDiabled)
+        {
+            <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.RequestedPageIndex-1)">صفحه قبلی</a></li>
+        }
+        @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+        {
+            if (i == Model.Data.RequestedPageIndex)
+            {
+                <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@i">@i</a></li>
+            }
+        }
+        @if (Model.Data.NextIsDisabled)
+        {
+            <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.RequestedPageIndex+1)">صفحه بعدی</a></li>
+        }
+
+        <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.PagesCount)">آخرین صفحه</a></li>
+
+    </ul>
+</nav>
+
+
+
+
+@section Scripts{
+
+    <script>
+        $('.disableInable').on('click', disable);
+
+        function disable(e) {
+            var userName = e.target.parentElement.parentElement.children[0].innerText;
+            var toBeToggledStatus = e.target.textContent;
+
+            swal.fire({
+                title: `${toBeToggledStatus}`,
+                text: `آیا از ${toBeToggledStatus} این کاربر مطمئن هستید؟`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'بله انجام شود',
+                cancelButtonText: 'خیر'
+
+            }).then(result => {
+                if (!result.value) {
+                    return;
+                }
+                else {
+
+                    var toSend = {
+                        "userName": userName
+                    }
+
+                    $.ajax({
+                        contentType: "application/x-www-form-urlencoded",
+                        dataType: "json",
+                        type: "POST",
+                        url: "ToggleUser",
+                        data: toSend,
+                        success: data => {
+                            if (data.succeeded) {
+                                swal.fire({
+                                    title: "موفق!",
+                                    text: data.message,
+                                    icon: "success",
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: "باشه"
+
+                                }).then(p => location.reload());
+                            } else {
+                                swal.fire({
+                                    title: "ناموفق!",
+                                    text: data.message,
+                                    icon: "warning",
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: "باشه"
+
+                                })
+                            }
+                        }
+                    })
+
+
+                }
+            })
+
+        }
+
+
+
+
+
+
+
+
+
+    </script>
+
+}
 

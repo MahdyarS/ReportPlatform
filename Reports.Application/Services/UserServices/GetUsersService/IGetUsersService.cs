@@ -32,6 +32,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
                 .Where(p => p.FirstName.Contains(request.SearchKey) || p.LastName.Contains(request.SearchKey))
                 .Select(p => new UserModelInAdminList
                 {
+                    UserName = p.UserName,
                     FName = p.FirstName,
                     LName = p.LastName,
                     PhoneNumber = p.PhoneNumber,
@@ -52,7 +53,8 @@ namespace Reports.Application.Services.UserServices.GetUsersService
                     NextIsDisabled = paginationResult.NextIsDisabled,
                     PrevIsDiabled = paginationResult.PrevIsDiabled,
                     RequestedPageIndex = request.PageIndex,
-                    RequestedSearchKey = request.SearchKey
+                    PagesCount = paginationResult.PagesCount,
+                    RequestedSearchKey = request.SearchKey,
                 }
             };
 
@@ -70,6 +72,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
         public bool NextIsDisabled { get; set; }
         public int FirstPageIndexToShow { get; set; }
         public int LastPageIndexToShow { get; set; }
+        public int PagesCount { get; set; }
 
     }
 
@@ -87,7 +90,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
         public bool IsDisabled { get; set; }
         public string PhoneNumber { get; set; }
         public string Position { get; set; }
-
+        public string UserName { get; set; }
     }
 
 }

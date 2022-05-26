@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reports.DataAccess.Contexts;
 
@@ -11,9 +12,10 @@ using Reports.DataAccess.Contexts;
 namespace Reports.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220518121944_EditingReport")]
+    partial class EditingReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,27 +127,20 @@ namespace Reports.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportId"), 1L, 1);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<TimeSpan>("FinishWorkTime")
-                        .HasColumnType("time(1)");
-
-                    b.Property<DateTime>("InsertionDateAndTime")
+                    b.Property<DateTime>("FinishTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRemote")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("InsertionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ReportsDetail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("StartWorkTime")
-                        .HasColumnType("time(1)");
+                    b.Property<DateTime>("StartWorkDateAndTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ReportId");
@@ -176,15 +171,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "074d134d-1629-4d31-ad79-6fcdb9e2ec00",
-                            ConcurrencyStamp = "a49ab53e-a78d-4bf4-9551-d2f82e4259ab",
+                            Id = "8d5dba52-6410-4e9c-9cfa-e31650787b6c",
+                            ConcurrencyStamp = "97d3e275-e616-4101-afaa-6ea7c008d951",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0283e3e8-ee30-47bb-a4a1-8390a6ee7316",
-                            ConcurrencyStamp = "25c7afb4-dbb4-447b-8452-ce0bc1ab89f3",
+                            Id = "7263057e-037f-40c7-91f4-07f6beccb231",
+                            ConcurrencyStamp = "63aa75be-3d66-46a9-9f38-990e91a1f736",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -262,9 +257,7 @@ namespace Reports.DataAccess.Migrations
                 {
                     b.HasOne("Reports.DataAccess.Entities.Users.User", "User")
                         .WithMany("Reports")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

@@ -1,0 +1,74 @@
+﻿@model Endpoint.Site.Models.ReportsControllerModels.ReportToAddViewModel
+
+@{
+    ViewData["Title"] = "AddNewReport";
+}
+
+<h1>ثبت گزارش کار</h1>
+@if(ViewBag.Error != null && ViewBag.Error != "")
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+
+<form asp-controller="Reports" asp-action="AddNewReport" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>تاریخ</td>
+                <td>ساعت شروع کار</td>
+                <td>ساعت پایان کار</td>
+                <td>حضوری/غیرحضوری</td>
+                <td class="col-6">توضیحات</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>
+                    <input type="text" id="date" name="date">
+                </td>
+                <td>
+                    <input type="time" asp-for="BeginningTime"/>
+                </td>
+                <td>
+                    <input type="time" asp-for="FinishTime"/>
+                </td>
+                <td>
+                    <input asp-for="IsRemote"/>
+                </td>
+                <td class="col-6">
+                    <textarea rows="8" class="col-12"  asp-for="ReportsDetail"></textarea>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <button class="btn btn-primary" type="submit">ثبت گزارش</button>
+</form>
+
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $("#date").pDatepicker({
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+
+
+}
+

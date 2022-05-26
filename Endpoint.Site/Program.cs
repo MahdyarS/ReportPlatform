@@ -1,4 +1,5 @@
 using Endpoint.Site.IOCServiceConfigurations.IdentityConfigs;
+using Endpoint.Site.IOCServiceConfigurations.ReportServicesConfigs;
 using Endpoint.Site.IOCServiceConfigurations.UserServicesConfigs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ IConfiguration Configuration = builder.Configuration;
 builder.Services.AddControllersWithViews();
 builder.Services.AddIdentityServices(Configuration);
 builder.Services.AddUserServices();
+builder.Services.AddReportServices();
 
 var app = builder.Build();
 
@@ -24,6 +26,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

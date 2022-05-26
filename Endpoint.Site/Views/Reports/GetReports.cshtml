@@ -1,0 +1,248 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.ReportServices.GetUserReportsListService.GetUsersReportsResultDto>
+@{
+    ViewData["Title"] = "GetReports";
+}
+
+<h1>لیست گزارش ها</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="row">
+    <form asp-action="GetReports">
+        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+        <input type="text" class="date form-control col-2" id="date" name="searchKeydate" value="@(Model.Data.SpecificDateisSearched ? Model.Data.RequestedSearchKeyDate : String.Empty)" />
+        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+    </form>
+</div>
+
+<div class="row">
+    جستجوی گزارش ها در بازه:
+    <form asp-action="GetReports">
+        <label>از تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyStartPreriodDateTime : String.Empty)" />
+        <label>تا تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyFinishPreriodDateTime : String.Empty)" />
+        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+    </form>
+</div>
+
+
+@if (!Model.Succeeded)
+{
+    <div class="alert alert-danger">
+        @Model.Message
+    </div>
+}
+else
+{
+    @if (Model.Data.SpecificDateisSearched)
+    {
+        <div class="alert alert-success">
+            نمایش گزارش در تاریخ: @Model.Data.RequestedSearchKeyDate
+        </div>
+    }
+    else if (Model.Data.PeriodIsSearched)
+    {
+        <div class="row d-flex justify-content-between alert alert-success">
+            <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
+            <div>شما در این بازه در مجموع @Model.Data.TotalHoursWorkedInPeriod ساعت کار کرده اید</div>
+        </div>
+    }
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th scope="col">تاریخ</th>
+                <th scope="col">ساعت شروع کار</th>
+                <th scope="col">ساعت پایان کار</th>
+                <th scope="col">مجموع ساعت کار</th>
+                <th scope="col">حضوری/غیرحضوری</th>
+                <th scope="col" class="col-6">جزئیات گزارش</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+
+            @foreach (var item in Model.Data.ReportsList)
+            {
+                <tr>
+                    <td class="d-none">@item.ReportId</td>
+                    <td>@item.Date</td>
+                    <td>@item.StartWorkTime</td>
+                    <td>@item.FinishWorkTime</td>
+                    <td>@item.WorkTime</td>
+                    <td>@item.IsRemote</td>
+                    <td class="col-6">@item.ReportsDetail</td>
+                    <td>
+                        <a asp-action="EditReport" asp-route-ReportId="@item.ReportId">
+                            <button class="btn btn-warning">ویرایش</button>
+                        </a>
+                        <button  class="btn btn-danger DeleteReport">حذف</button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
+
+
+
+    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+        <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+            <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=1&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">اولین صفحه</a></li>
+
+
+            @if (Model.Data.PrevIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex-1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">صفحه قبلی</a></li>
+            }
+            @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+            {
+                if (i == Model.Data.RequestedPageIndex)
+                {
+                    <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@i&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">@i</a></li>
+                }
+            }
+            @if (Model.Data.NextIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex+1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">صفحه بعدی</a></li>
+            }
+
+            <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@Model.Data.PagesCount" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">آخرین صفحه</a></li>
+
+        </ul>
+    </nav>
+
+}
+
+
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+<script>
+
+    $('.DeleteReport').on('click', deleteReport)
+
+    function deleteReport(e) {
+        //var userName = e.target.parentElement.parentElement.children[0].innerText;
+        //var toBeToggledStatus = e.target.textContent;
+        var reportId = e.target.parentElement.parentElement.children[0].innerText;
+
+        swal.fire({
+            title: 'حذف',
+            text: `آیا از حذف این گزارش مطمئن هستید؟`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'بله انجام شود',
+            cancelButtonText: 'خیر'
+
+        }).then(result => {
+            if (!result.value) {
+                return;
+            }
+            else {
+
+                var toSend = {
+                    "reportId": reportId
+                }
+
+                $.ajax({
+                    contentType: "application/x-www-form-urlencoded",
+                    dataType: "json",
+                    type: "POST",
+                    url: "DeleteReport",
+                    data: toSend,
+                    success: data => {
+                        if (data.succeeded) {
+                            swal.fire({
+                                title: "موفق!",
+                                text: data.message,
+                                icon: "success",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
+
+                            }).then(p => location.reload());
+                        } else {
+                            swal.fire({
+                                title: "ناموفق!",
+                                text: data.message,
+                                icon: "warning",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
+
+                            })
+                        }
+                    }
+                })
+
+
+            }
+        })
+
+    }
+
+
+</script>
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
