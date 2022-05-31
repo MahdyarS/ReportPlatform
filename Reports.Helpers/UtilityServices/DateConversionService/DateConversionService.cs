@@ -17,14 +17,30 @@ namespace Reports.Helpers.UtilityServices.DateConversionService
             PersianCalendar pc = new PersianCalendar();
 
             return new DateTime(Convert.ToInt32(dateArray[0]),
-                                    Convert.ToInt32(dateArray[1]),
-                                    Convert.ToInt32(dateArray[2]), pc);
+                                Convert.ToInt32(dateArray[1]),
+                                Convert.ToInt32(dateArray[2]), pc);
         }
 
-        public static string ConvertMiladiToShamsi(this DateTime date, string format)
+        public static string ConvertMiladiToShamsi(this DateTime date)
         {
             PersianDateTime persianDateTime = new PersianDateTime(date);
-            return persianDateTime.ToString(format);
+            var persian = persianDateTime.ToString("yyyy/MM/dd");
+            char[] persianDigits = { '۰', '۱', '۲','۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+            char[] englishDigits = { '0', '1', '2','3', '4', '5', '6', '7', '8', '9' };
+
+            foreach (var character in persian)
+            {
+                for(int i = 0; i < 10; i++)
+                {
+                    if(character == persianDigits[i])
+                    {
+                        persian = persian.Replace(character, englishDigits[i]);
+                        break;
+                    }
+                }
+            }
+
+            return persian;
         }
     }
 }

@@ -1,0 +1,93 @@
+﻿@model Endpoint.Site.Models.ReportsControllerModels.AddPeriodViewModel
+
+@{
+    ViewData["Title"] = "AddPeriod";
+}
+
+<h1>ذخیره بازه</h1>
+
+
+@if(ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+
+
+<form asp-action="AddPeriod">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>تاریخ شروع بازه</td>
+                <td>تاریخ پایان بازه</td>
+                <td>نام بازه</td>
+                <td class="col-6">توضیحات</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input class="date form-control" type="text" name="startPeriodDate" value="@(Model.StartPeriodDate)" />
+                </td>
+                <td>
+                    <input class="date form-control" type="text" name="finishPeriodDate" value="@(Model.FinishPeriodDate)" />
+                </td>
+                <td>
+                    <input asp-for="PeriodName" class="form-control" />
+                </td>
+                <td class="col-6">
+                    <textarea asp-for="PeriodDescription" class="form-control" rows="8"></textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">ایجاد بازه</button>
+</form>
+
+
+
+
+
+
+
+
+
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

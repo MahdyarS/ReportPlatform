@@ -73,13 +73,13 @@
                             </ul>
                         </li>
                         <li class="has-sub nav-item">
-                            <a href="#"><i class="bi bi-person"></i><span data-i18n="" class="menu-title">مدیریت کالاها</span><span class="tag badge badge-pill badge-danger mt-1">2</span></a>
+                            <a href="#"><i class="bi bi-person"></i><span data-i18n="" class="menu-title">بازه ها</span><span class="tag badge badge-pill badge-danger mt-1">2</span></a>
                             <ul class="menu-content">
                                 <li>
-                                    <a asp-area="Admin" asp-controller="Products" asp-action="Categories" class="menu-item">دسته بندی ها</a>
+                                    <a asp-area="" asp-controller="Reports" asp-action="AddPeriod" class="menu-item">ایجاد بازه جدید</a>
                                 </li>
                                 <li>
-                                    <a asp-area="Admin" asp-controller="Users" asp-action="CreateUser" class="menu-item">افزودن کاربر جدید</a>
+                                    <a asp-area="" asp-controller="Reports" asp-action="PeriodsList" class="menu-item">لیست بازه ها</a>
                                 </li>
                             </ul>
                         </li>
@@ -443,6 +443,7 @@
     @*-----------------------------------Modal-----------------------------------*@
 
 
+    @Html.Partial("_ValidationScriptsPartial")
 
     <!-- BEGIN VENDOR JS-->
     <script src="~/Admin/vendors/js/core/jquery-3.3.1.min.js"></script>

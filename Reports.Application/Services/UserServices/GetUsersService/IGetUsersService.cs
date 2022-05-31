@@ -32,12 +32,12 @@ namespace Reports.Application.Services.UserServices.GetUsersService
                 .Where(p => p.FirstName.Contains(request.SearchKey) || p.LastName.Contains(request.SearchKey))
                 .Select(p => new UserModelInAdminList
                 {
-                    UserName = p.UserName,
                     FName = p.FirstName,
                     LName = p.LastName,
                     PhoneNumber = p.PhoneNumber,
                     Position = p.Position,
-                    IsDisabled = (p.LockoutEnd > DateTimeOffset.Now && p.LockoutEnabled)
+                    IsDisabled = (p.LockoutEnd > DateTimeOffset.Now && p.LockoutEnabled),
+                    UserId = p.Id
                 }).ToPaged(request.PageIndex,request.ItemsInPageCount);
 
             if (!paginationResult.Succeeded)
@@ -90,7 +90,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
         public bool IsDisabled { get; set; }
         public string PhoneNumber { get; set; }
         public string Position { get; set; }
-        public string UserName { get; set; }
+        public string UserId { get; set; }
     }
 
 }

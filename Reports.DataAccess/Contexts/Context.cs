@@ -19,6 +19,7 @@ namespace Reports.DataAccess.Contexts
         }
 
         public DbSet<Report> Reports { get; set; }
+        public DbSet<Period> Periods { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +31,7 @@ namespace Reports.DataAccess.Contexts
 
             builder.ApplyConfiguration(new ReportConfigs());
             builder.ApplyConfiguration(new RoleConfigs());
+            builder.ApplyConfiguration(new PeriodConfigs());
         }
 
     }

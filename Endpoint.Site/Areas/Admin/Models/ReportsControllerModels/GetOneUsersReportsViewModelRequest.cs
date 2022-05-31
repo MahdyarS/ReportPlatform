@@ -2,7 +2,10 @@
 {
     public class GetOneUsersReportsViewModelRequest
     {
-        public string UserName { get; set; }
+        public string UserId { get; set; }
+        public string UsersFirstName { get; set; }
+        public string UsersLastName { get; set; }
+        public string PeriodName { get; set; } = "";
         public string SearchKeyDate { get; set; } = "";
         public string SearchKeyStartPreriodDate { get; set; } = "";
         public string SearchKeyFinishPreriodDate { get; set; } = "";

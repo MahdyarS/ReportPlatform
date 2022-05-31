@@ -10,7 +10,7 @@ namespace Reports.Helpers.UtilityServices.Pagination
     {
         public static PaginationResult<T> ToPaged<T>(this IEnumerable<T> source, int requestedPageIndex, int itemsInPageCount)
         {
-            double count = /*(double)*/source.Count();
+            double count = source.Count();
             var pagesCount = (int)Math.Ceiling(count / itemsInPageCount);
 
             if (count == 0)
@@ -67,6 +67,8 @@ namespace Reports.Helpers.UtilityServices.Pagination
             public bool NextIsDisabled { get; set; }
             public int FirstPageIndexToShow { get; set; }
             public int LastPageIndexToShow { get; set; }
+            public bool isEmptyList { get; set; }
+            public bool OutOfRangeRequestedPage { get; set; }
         }
     }
 }

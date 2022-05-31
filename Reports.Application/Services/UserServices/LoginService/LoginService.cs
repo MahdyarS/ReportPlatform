@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Reports.DataAccess.Entities.Users;
 using Reports.Helpers.Dtos.ResultDto;
+using System.Security.Claims;
 
 namespace Reports.Application.Services.UserServices.LoginService
 {
@@ -27,7 +28,10 @@ namespace Reports.Application.Services.UserServices.LoginService
             if (user == null)
                 return new ResultDto(false, "اطلاعات وارد شده صحیح نیست!");
 
+            
+
             var result = await _signInManager.PasswordSignInAsync(request.UserName,request.Password,true,true);
+            //_signInManager.PasswordSignInAsync(user,)
 
             if (result.IsLockedOut)
                 return new ResultDto(false, "حساب کاربری شما غیر فعال می باشد!");
@@ -36,7 +40,10 @@ namespace Reports.Application.Services.UserServices.LoginService
             {
                 //
             }
+            //var claimId = new Claim("Id", user.Id);
+            //_userManager.AddClaimAsync(user,claimId);
 
+            //_userManager.GetClaimsAsync(user).Wait();
             return new ResultDto(true, "ورود با موفقیت انجام شد!");
         }
     }

@@ -16,124 +16,199 @@ else
     <h1>لیست گزارش های @Model.Data.UsersFirstName @Model.Data.UsersLastName</h1>
 
 
-<div class="row">
-    <form asp-action="GetOneUsersReports">
-        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
-        <input type="text" class="date form-control col-2" id="date" name="searchKeydate" />
-        <input type="hidden" name="userName" value="@Model.Data.UserName" />
-        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
-    </form>
-</div>
-
-<div class="row">
-    جستجوی گزارش ها در بازه:
-    <form asp-action="GetOneUsersReports">
-        <label>از تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" />
-        <label>تا تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" />
-        <input type="hidden" name="userName" value="@Model.Data.UserName" />
-        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
-    </form>
-</div>
-
-
-@if (!Model.Succeeded)
-{
-    <div class="alert alert-danger">
-        @Model.Message
+    <div class="row">
+        <form asp-action="GetOneUsersReports">
+            <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+            <input type="text" class="date form-control col-2" id="date" name="searchKeydate" />
+            <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+            <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+            <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+            <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+        </form>
     </div>
-}
-else
-{
-    @if (Model.Data.SpecificDateisSearched)
+
+    <div class="row">
+        جستجوی گزارش ها در بازه:
+        <form asp-action="GetOneUsersReports">
+            <label>از تاریخ:</label>
+            <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" />
+            <label>تا تاریخ:</label>
+            <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" />
+            <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+            <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+            <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+            <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+        </form>
+    </div>
+
+
+    @if (!Model.Succeeded)
     {
-        <div class="alert alert-success">
-            نمایش گزارش در تاریخ: @Model.Data.RequestedSearchKeyDate
+        <div class="alert alert-danger">
+            @Model.Message
         </div>
     }
-    else if (Model.Data.PeriodIsSearched)
+    else
     {
-        <div class="row d-flex justify-content-between alert alert-success">
-            <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
-            <div>مجموع ساعت کار در این بازه @Model.Data.TotalHoursWorkedInPeriod ساعت است</div>
-        </div>
-    }
-
-    <table class="table">
-
-        <thead>
-            <tr>
-                <th scope="col">تاریخ</th>
-                <th scope="col">ساعت شروع کار</th>
-                <th scope="col">ساعت پایان کار</th>
-                <th scope="col">مجموع ساعت کار</th>
-                <th scope="col">حضوری/غیرحضوری</th>
-                <th scope="col" class="col-6">جزئیات گزارش</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-
-            @foreach (var item in Model.Data.ReportsList)
-            {
-                <tr>
-                    <td>@item.Date</td>
-                    <td>@item.StartWorkTime</td>
-                    <td>@item.FinishWorkTime</td>
-                    <td>@item.WorkTime</td>
-                    <td>@item.IsRemote</td>
-                    <td class="col-6">@item.ReportsDetail</td>
-                </tr>
-            }
-
-        </tbody>
-    </table>
-
-
-
-
-
-    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
-        <ul class="pagination" dir="ltr" style="direction:ltr !important">
-
-            <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=1&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">اولین صفحه</a></li>
-
-
-            @if (Model.Data.PrevIsDisabled)
-            {
-                <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
-            }
-            else
-            {
-                <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex-1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">صفحه قبلی</a></li>
-            }
-            @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
-            {
-                if (i == Model.Data.RequestedPageIndex)
+        @if (Model.Data.SpecificDateisSearched)
+        {
+            <div class="alert alert-success">
+                نمایش گزارش در تاریخ: @Model.Data.RequestedSearchKeyDate
+            </div>
+        }
+        else if (Model.Data.PeriodIsSearched)
+        {
+            <div class="row d-flex justify-content-between alert alert-success">
+                @if(!String.IsNullOrEmpty(Model.Data.PeriodName))
                 {
-                    <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                    <h3>
+                        بازه @Model.Data.PeriodName ایجاد شده توسط @Model.Data.UsersFirstName @Model.Data.UsersLastName
+                    </h3>
+                }
+                <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
+                <div>مجموع ساعت کار در این بازه @Model.Data.TotalHoursWorkedInPeriod ساعت است</div>
+            </div>
+        }
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th scope="col">تاریخ</th>
+                    <th scope="col">ساعت شروع کار</th>
+                    <th scope="col">ساعت پایان کار</th>
+                    <th scope="col">مجموع ساعت کار</th>
+                    <th scope="col">حضوری/غیرحضوری</th>
+                    <th scope="col" class="col-6">جزئیات گزارش</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+
+                @foreach (var item in Model.Data.ReportsList)
+                {
+                    <tr>
+                        <td>@item.Date</td>
+                        <td>@item.StartWorkTime</td>
+                        <td>@item.FinishWorkTime</td>
+                        <td>@item.WorkTime</td>
+                        <td>@item.IsRemote</td>
+                        <td class="col-6">@item.ReportsDetail</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+
+
+
+
+        <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+            <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+                <li class="page-item">
+                    <a class="page-link"
+               asp-action="GetOneUsersReports"
+               asp-route-UserId="@Model.Data.UserId"
+               asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+               asp-route-UsersLastName="@Model.Data.UsersLastName"
+               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
+               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
+               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-PeriodName="@Model.Data.PeriodName"
+               asp-route-PageIndex="1">
+                        اولین صفحه
+                    </a>
+                </li>
+
+                @if (Model.Data.PrevIsDisabled)
+                {
+                    <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
                 }
                 else
                 {
-                    <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@i&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">@i</a></li>
+                    <li class="page-item">
+                        <a class="page-link"
+               asp-action="GetOneUsersReports"
+               asp-route-UserId="@Model.Data.UserId"
+               asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+               asp-route-UsersLastName="@Model.Data.UsersLastName"
+               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
+               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
+               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-PeriodName="@Model.Data.PeriodName"
+               asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)">
+                            صفحه قبلی
+                        </a>
+                    </li>
+
                 }
-            }
-            @if (Model.Data.NextIsDisabled)
-            {
-                <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
-            }
-            else
-            {
-                <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex+1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">صفحه بعدی</a></li>
-            }
+                @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+                {
+                    if (i == Model.Data.RequestedPageIndex)
+                    {
+                        <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+               asp-action="GetOneUsersReports"
+               asp-route-UserId="@Model.Data.UserId"
+               asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+               asp-route-UsersLastName="@Model.Data.UsersLastName"
+               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
+               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
+               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-PeriodName="@Model.Data.PeriodName"
+               asp-route-PageIndex="@i">
+                                @i
+                            </a>
+                        </li>
 
-            <li class="page-item"><a class="page-link" href="GetOneUsersReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.PagesCount)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)&userName=@Model.Data.UserName">آخرین صفحه</a></li>
+                    }
+                }
+                @if (Model.Data.NextIsDisabled)
+                {
+                    <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+               asp-action="GetOneUsersReports"
+               asp-route-UserId="@Model.Data.UserId"
+               asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+               asp-route-UsersLastName="@Model.Data.UsersLastName"
+               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
+               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
+               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-PeriodName="@Model.Data.PeriodName"
+               asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">
+                            صفحه بعدی
+                        </a>
+                    </li>
+                }
 
-        </ul>
-    </nav>
+                <li class="page-item">
+                    <a class="page-link"
+               asp-action="GetOneUsersReports"
+               asp-route-UserId="@Model.Data.UserId"
+               asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+               asp-route-UsersLastName="@Model.Data.UsersLastName"
+               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
+               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
+               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-PeriodName="@Model.Data.PeriodName"
+               asp-route-PageIndex="@Model.Data.PagesCount">
+                        آخرین صفحه
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-}
-@section Scripts{
+    }
+    @section Scripts{
 <script src="~/js/persian-date.min.js"></script>
 
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reports.Helpers.UtilityServices.DateConversionService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 {
@@ -38,15 +39,12 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
             DateTime StartPeriod = new DateTime();
             DateTime FinishPeriod = new DateTime();
 
-            var user = _context.Users.SingleOrDefault(p => p.UserName == request.UserName);
-
-            if (user == null)
-                return new ResultDto<GetUsersReportsResultDto>(false, "کاربر مورد نظر یافت نشد!");
 
             var query = _context.Reports.Where(p => (((isEmptySearchKey && isEmptyPeriod) ||
                                                                 (!isEmptySearchKey && p.Date == searchKeyDate) ||
                                                                 (!isEmptyPeriod && p.Date <= FinishPeriod && p.Date >= StartPeriod))) &&
-                                                                p.UserId == user.Id);
+                                                                p.UserId == request.UserId);
+            
 
             string totalWorkHours = "";
 
@@ -64,9 +62,9 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                     {
                         Data = new GetUsersReportsResultDto
                         {
-                            UserName = request.UserName,
-                            UsersFirstName = user.FirstName,
-                            UsersLastName = user.LastName
+                            UserId = request.UserId,
+                            UsersFirstName = request.UsersFirstName,
+                            UsersLastName = request.UsersLastName
                         }
                     };
 
@@ -78,7 +76,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
             var paginationResult = query.Select(p => new ReportToShowDto
             {
                 ReportId = p.ReportId,
-                Date = p.Date.ConvertMiladiToShamsi("yyyy/MM/dd"),
+                Date = p.Date.ConvertMiladiToShamsi(),
                 FinishWorkTime = p.FinishWorkTime.ToString("hh':'mm"),
                 StartWorkTime = p.StartWorkTime.ToString("hh':'mm"),
                 ReportsDetail = p.ReportsDetail,
@@ -95,9 +93,9 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                     {
                         Data = new GetUsersReportsResultDto
                         {
-                            UserName = request.UserName,
-                            UsersFirstName = user.FirstName,
-                            UsersLastName = user.LastName
+                            UserId = request.UserId,
+                            UsersFirstName = request.UsersFirstName,
+                            UsersLastName = request.UsersLastName
                         }
                     };
 
@@ -105,9 +103,9 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                 {
                     Data = new GetUsersReportsResultDto
                     {
-                        UserName = request.UserName,
-                        UsersFirstName = user.FirstName,
-                        UsersLastName = user.LastName
+                        UserId = request.UserId,
+                        UsersFirstName = request.UsersFirstName,
+                        UsersLastName = request.UsersLastName
                     }
                 };
 
@@ -130,11 +128,10 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                     SearchKeyStartPreriodDate = request.SearchKeyStartPreriodDate,
                     SearchKeyFinishPreriodDate = request.SearchKeyFinishPreriodDate,
                     TotalHoursWorkedInPeriod = totalWorkHours,
-                    UserName = request.UserName,
-                    UsersFirstName = user.FirstName,
-                    UsersLastName = user.LastName,
-                    SearchKeyStartPreriodDateTime = StartPeriod.Date,
-                    SearchKeyFinishPreriodDateTime = FinishPeriod.Date
+                    UserId = request.UserId,
+                    UsersFirstName = request.UsersFirstName,
+                    UsersLastName = request.UsersLastName,
+                    PeriodName = request.PeriodName
                 }
             };
 
@@ -157,11 +154,10 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
         public bool SpecificDateisSearched { get; set; }
         public string SearchKeyStartPreriodDate { get; set; }
         public string SearchKeyFinishPreriodDate { get; set; }
-        public DateTime SearchKeyStartPreriodDateTime { get; set; }
-        public DateTime SearchKeyFinishPreriodDateTime { get; set; }
-        public string UserName { get; set; }
+        public string UserId { get; set; }
         public string UsersFirstName { get; set; }
         public string UsersLastName { get; set; }
+        public string PeriodName { get; set; }
     }
 
     public class ReportToShowDto
@@ -177,12 +173,15 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 
     public class GetReportServiceRequestDto
     {
+        public string PeriodName { get; set; } = "";
+        public string UsersFirstName { get; set; } = "";
+        public string UsersLastName { get; set; } = "";
         public string SearchKeyDate { get; set; } = "";
         public string SearchKeyStartPreriodDate { get; set; } = "";
         public string SearchKeyFinishPreriodDate { get; set; } = "";
         public int PageIndex { get; set; } = 1;
         public int ItemsInPageCount { get; set; } = 1;
-        public string UserName { get; set; }
+        public string UserId { get; set; }
     }
 
 

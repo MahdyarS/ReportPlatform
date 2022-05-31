@@ -1,0 +1,114 @@
+﻿@model Endpoint.Site.Models.ReportsControllerModels.EditPeriodViewModel
+
+@{
+    ViewData["Title"] = "EditPeriod";
+}
+
+<h1>EditPeriod</h1>
+
+@if (ViewBag.Errors != null)
+{
+    <div class="alert alert-danger">
+        @foreach (var item in ViewBag.Errors)
+        {
+            <p>
+                @item
+            </p>
+        }
+    </div>
+}
+
+@if(ViewData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["Error"]
+    </div>
+}
+
+
+<form asp-action="EditPeriod">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="PeriodId" />
+    <span asp-validation-for="PeriodId" class="text-danger"></span>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>تاریخ شروع بازه</td>
+                <td>تاریخ پایان بازه</td>
+                <td>نام بازه</td>
+                <td class="col-6">توضیحات</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input class="date form-control" type="text" asp-for="StartPeriod" />
+                    <span asp-validation-for="StartPeriod" class="text-danger"></span>
+                </td>
+                <td>
+                    <input class="date form-control" type="text" asp-for="FinishPeriod" />
+                    <span asp-validation-for="FinishPeriod" class="text-danger"></span>
+
+                </td>
+                <td>
+                    <input asp-for="PeriodName" class="form-control" />
+                    <span asp-validation-for="PeriodName" class="text-danger"></span>
+
+                </td>
+                <td class="col-6">
+                    <textarea asp-for="PeriodDescription" class="form-control" rows="8"></textarea>
+                    <span asp-validation-for="PeriodDescription" class="text-danger"></span>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">ثبت تغییرات</button>
+</form>
+
+
+
+
+
+
+
+
+
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+

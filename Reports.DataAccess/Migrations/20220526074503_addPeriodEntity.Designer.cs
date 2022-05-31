@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reports.DataAccess.Contexts;
 
@@ -11,9 +12,10 @@ using Reports.DataAccess.Contexts;
 namespace Reports.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220526074503_addPeriodEntity")]
+    partial class addPeriodEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +128,7 @@ namespace Reports.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PeriodId"), 1L, 1);
 
                     b.Property<DateTime>("FinishPeriod")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PeriodDescription")
                         .IsRequired()
@@ -137,7 +139,7 @@ namespace Reports.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartPeriod")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -209,15 +211,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "89b1313e-0712-4453-bbae-aaa3aebe1cfe",
-                            ConcurrencyStamp = "7af59e42-3d85-430e-962a-9a0da59829ab",
+                            Id = "010ea7c8-5f63-4a1b-a372-70f09d799ba9",
+                            ConcurrencyStamp = "93b58183-6399-4ff9-9c00-13e6caaa0180",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8f1b35e6-15e1-4a84-a36c-ac8acf597860",
-                            ConcurrencyStamp = "838e3f70-b6da-4e94-ad67-271f354f09f0",
+                            Id = "47be57de-e67a-49b0-aef3-ab4e5d38440f",
+                            ConcurrencyStamp = "cb55f811-11cd-4c62-b94d-ab0366353ec2",
                             Name = "User",
                             NormalizedName = "USER"
                         });

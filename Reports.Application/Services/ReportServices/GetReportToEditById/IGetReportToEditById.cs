@@ -38,7 +38,7 @@ namespace Reports.Application.Services.ReportServices.GetReportToEditById
             {
                 Data = new ReportToShowForEditDto
                 {
-                    Date = report.Date.ConvertMiladiToShamsi("yyyy/MM/dd"),
+                    Date = report.Date.ConvertMiladiToShamsi(),
                     BeginningTime = report.StartWorkTime,
                     FinishTime = report.FinishWorkTime,
                     ReportsDetail = report.ReportsDetail,

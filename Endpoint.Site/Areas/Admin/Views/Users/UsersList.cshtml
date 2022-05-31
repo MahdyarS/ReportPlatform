@@ -39,7 +39,7 @@
 }
 else if (Model.Data.RequestedSearchKey != "")
 {
-    <div class="success alert-success">
+    <div class="alert alert-success">
         نمایش نتایج برای : @Model.Data.RequestedSearchKey
     </div>
 
@@ -70,7 +70,8 @@ else if (Model.Data.RequestedSearchKey != "")
                 <td>
                     @*<button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#UserEditModal">جزئیات</button>*@
                     
-                    <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UserName="@item.UserName"><button class="btn btn-info">گزارش ها</button></a>
+                    <a asp-area="Admin" asp-controller="Reports" asp-action="ShowUserPeriods" asp-route-UserId="@item.UserId" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName"><button class="btn btn-info">بازه ها</button></a>
+                    <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName" asp-route-UserName="@item.UserId"><button class="btn btn-info">گزارش ها</button></a>
 
                     @if (item.IsDisabled)
                     {

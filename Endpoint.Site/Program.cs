@@ -1,4 +1,5 @@
 using Endpoint.Site.IOCServiceConfigurations.IdentityConfigs;
+using Endpoint.Site.IOCServiceConfigurations.PeriodServicesConfigs;
 using Endpoint.Site.IOCServiceConfigurations.ReportServicesConfigs;
 using Endpoint.Site.IOCServiceConfigurations.UserServicesConfigs;
 
@@ -11,6 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddIdentityServices(Configuration);
 builder.Services.AddUserServices();
 builder.Services.AddReportServices();
+builder.Services.AddPeriodServices();
 
 var app = builder.Build();
 

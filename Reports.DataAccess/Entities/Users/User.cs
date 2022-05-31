@@ -17,5 +17,6 @@ namespace Reports.DataAccess.Entities.Users
 
 
         public virtual ICollection<Report> Reports { get; set; }
+        public virtual ICollection<Period> Periods { get; set; }
     }
 }

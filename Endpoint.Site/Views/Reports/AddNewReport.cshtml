@@ -5,7 +5,7 @@
 }
 
 <h1>ثبت گزارش کار</h1>
-@if(ViewBag.Error != null && ViewBag.Error != "")
+@if (ViewBag.Error != null && ViewBag.Error != "")
 {
     <div class="alert alert-danger">
         @ViewBag.Error
@@ -19,7 +19,7 @@
                 <td>تاریخ</td>
                 <td>ساعت شروع کار</td>
                 <td>ساعت پایان کار</td>
-                <td>حضوری/غیرحضوری</td>
+                <td>غیرحضوری</td>
                 <td class="col-6">توضیحات</td>
             </tr>
         </thead>
@@ -27,19 +27,19 @@
 
             <tr>
                 <td>
-                    <input type="text" id="date" name="date">
+                    <input type="text" id="date" asp-for="Date" class="form-control">
                 </td>
                 <td>
-                    <input type="time" asp-for="BeginningTime"/>
+                    <input type="time" asp-for="BeginningTime" class="form-control" />
                 </td>
                 <td>
-                    <input type="time" asp-for="FinishTime"/>
+                    <input type="time" asp-for="FinishTime" class="form-control" />
                 </td>
                 <td>
-                    <input asp-for="IsRemote"/>
+                    <input asp-for="IsRemote" />
                 </td>
                 <td class="col-6">
-                    <textarea rows="8" class="col-12"  asp-for="ReportsDetail"></textarea>
+                    <textarea rows="8" class="col-12 form-control" asp-for="ReportsDetail"></textarea>
                 </td>
             </tr>
 
@@ -58,6 +58,9 @@
 
     $(document).ready(function() {
       $("#date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
+
           calendar:{
         persian: {
             locale: 'en'

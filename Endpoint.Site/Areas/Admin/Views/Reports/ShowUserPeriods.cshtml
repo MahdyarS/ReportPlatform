@@ -1,0 +1,131 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.PeriodServices.GetPeriodsListService.GetPeriodsListResultDto>
+
+@{
+    ViewData["Title"] = "ShowUserPeriods";
+}
+
+
+
+<h1>بازه های ایجاد شده توسط @Model.Data.UsersFirstName @Model.Data.UsersLastName</h1>
+
+
+<div class="p-3 col-12 bg-light shadow-lg mt-3 mb-5" dir="ltr">
+    <form asp-action="ShowUserPeriods" method="post">
+        <div class="input-group" dir="ltr">
+            <input id="key" name="searchkey" type="text" class="form-control" placeholder="نام بازه یا قسمتی از آن را وارد کنید:">
+            <input type="hidden" name="itemsInPage" value="" />
+            <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+            <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+            <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+            <button class="btn d-inline-flex align-items-center btn-outline-success" type="submit" id="search"><i class="bi bi-search mb-0"></i></button>
+        </div>
+    </form>
+</div>
+@if(Model.Data.PagesCount == 0)
+{
+    <div class='alert alert-secondary'>
+        @Model.Message
+    </div>
+    return;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @if(Model.Data.RequestedSearchKey != "")
+    {
+        <div class="alert alert-success">
+            نتایج جستجو برای "@Model.Data.RequestedSearchKey":
+        </div>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <td>نام بازه</td>
+                <td>شروع بازه</td>
+                <td>پایان بازه</td>
+                <td class="col-6">توضیحات</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data.PeriodsList)
+            {
+                <tr>
+                    <td class="d-none">@item.PeriodId</td>
+                    <td>@item.PeriodName</td>
+                    <td>@item.StartPeriodDate</td>
+                    <td>@item.FinishPeriodDate</td>
+                    <td class="col-6">@item.PeriodDescription</td>
+                    <td>
+                        <a asp-action="GetOneUsersReports" 
+                        asp-route-UserId="@Model.Data.UserId" 
+                        asp-route-UsersFirstName="@Model.Data.UsersFirstName"
+                        asp-route-UsersLastName="@Model.Data.UsersLastName" 
+                        asp-route-SearchKeyStartPreriodDate="@item.StartPeriodDate" 
+                        asp-route-SearchKeyFinishPreriodDate="@item.FinishPeriodDate" 
+                        asp-route-PeriodName="@item.PeriodName">
+                            <button class="btn btn-sm btn-primary">مشاهده بازه</button>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+        <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+            <li class="page-item"><a class="page-link" asp-action="ShowUserPeriods" asp-route-UsersFirstName="@Model.Data.UsersFirstName" asp-route-UsersLastName="@Model.Data.UsersLastName" asp-route-UserId="@Model.Data.UserId" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="1">اولین صفحه</a></li>
+
+
+            @if (Model.Data.PrevIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" asp-action="ShowUserPeriods" asp-route-UsersFirstName="@Model.Data.UsersFirstName" asp-route-UsersLastName="@Model.Data.UsersLastName" asp-route-UserId="@Model.Data.UserId" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@Model.Data.RequestedPageIndex-1">صفحه قبلی</a></li>
+
+
+            }
+            @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+            {
+                if (i == Model.Data.RequestedPageIndex)
+                {
+                    <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" asp-action="ShowUserPeriods" asp-route-UsersFirstName="@Model.Data.UsersFirstName" asp-route-UsersLastName="@Model.Data.UsersLastName" asp-route-UserId="@Model.Data.UserId" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@i">@i</a></li>
+
+
+                }
+            }
+            @if (Model.Data.NextIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" asp-action="ShowUserPeriods" asp-route-UsersFirstName="@Model.Data.UsersFirstName" asp-route-UsersLastName="@Model.Data.UsersLastName" asp-route-UserId="@Model.Data.UserId" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">صفحه بعدی</a></li>
+            }
+
+            <li class="page-item"><a class="page-link" asp-action="ShowUserPeriods" asp-route-UsersFirstName="@Model.Data.UsersFirstName" asp-route-UsersLastName="@Model.Data.UsersLastName" asp-route-UserId="@Model.Data.UserId" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@Model.Data.PagesCount">آخرین صفحه</a></li>
+
+        </ul>
+    </nav>
+
+
+}
+
+
+
+
+
+

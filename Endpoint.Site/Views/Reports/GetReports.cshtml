@@ -31,9 +31,9 @@
     جستجوی گزارش ها در بازه:
     <form asp-action="GetReports">
         <label>از تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyStartPreriodDateTime : String.Empty)" />
+        <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyStartPreriodDate : String.Empty)" />
         <label>تا تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyFinishPreriodDateTime : String.Empty)" />
+        <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" value="@(Model.Data.PeriodIsSearched? Model.Data.SearchKeyFinishPreriodDate : String.Empty)" />
         <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
     </form>
 </div>
@@ -55,9 +55,25 @@ else
     }
     else if (Model.Data.PeriodIsSearched)
     {
-        <div class="row d-flex justify-content-between alert alert-success">
-            <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
-            <div>شما در این بازه در مجموع @Model.Data.TotalHoursWorkedInPeriod ساعت کار کرده اید</div>
+        <div class="alert alert-success">
+            <div class="row justify-content-between">
+                <span>
+                    @if (Model.Data.PeriodName != "")
+                    {
+                        <h3>بازه @Model.Data.PeriodName:</h3>
+                    }
+                    نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate .
+                    شما در این بازه در مجموع @Model.Data.TotalHoursWorkedInPeriod ساعت کار کرده اید
+                    @if (Model.Data.PeriodName == "")
+                    {
+                        <a asp-action="AddPeriod" asp-route-start="@Model.Data.SearchKeyStartPreriodDate" asp-route-finish="@Model.Data.SearchKeyFinishPreriodDate">
+                            <button class="btn btn-sm btn-primary mt-2" type="button">ذخیره کردن بازه</button>
+                        </a>
+
+                    }
+                </span>
+
+            </div>
         </div>
     }
 
@@ -90,7 +106,7 @@ else
                         <a asp-action="EditReport" asp-route-ReportId="@item.ReportId">
                             <button class="btn btn-warning">ویرایش</button>
                         </a>
-                        <button  class="btn btn-danger DeleteReport">حذف</button>
+                        <button class="btn btn-danger DeleteReport">حذف</button>
                     </td>
                 </tr>
             }
@@ -105,7 +121,7 @@ else
     <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
         <ul class="pagination" dir="ltr" style="direction:ltr !important">
 
-            <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=1&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">اولین صفحه</a></li>
+            <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-PeriodName="@Model.Data.PeriodName" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="1" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">اولین صفحه</a></li>
 
 
             @if (Model.Data.PrevIsDisabled)
@@ -114,7 +130,8 @@ else
             }
             else
             {
-                <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex-1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">صفحه قبلی</a></li>
+                <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-PeriodName="@Model.Data.PeriodName" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">صفحه قبلی</a></li>
+
             }
             @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
             {
@@ -124,7 +141,8 @@ else
                 }
                 else
                 {
-                    <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@i&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">@i</a></li>
+                    <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-PeriodName="@Model.Data.PeriodName" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@i" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">@i</a></li>
+
                 }
             }
             @if (Model.Data.NextIsDisabled)
@@ -133,10 +151,11 @@ else
             }
             else
             {
-                <li class="page-item"><a class="page-link" href="GetReports?searchkeyDate=@Model.Data.RequestedSearchKeyDate&pageIndex=@(Model.Data.RequestedPageIndex+1)&searchKeyStartPreriodDate=@(Model.Data.SearchKeyStartPreriodDate)&searchKeyFinishPreriodDate=@(Model.Data.SearchKeyFinishPreriodDate)">صفحه بعدی</a></li>
+                <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-PeriodName="@Model.Data.PeriodName" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">صفحه بعدی</a></li>
+
             }
 
-            <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@Model.Data.PagesCount" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">آخرین صفحه</a></li>
+            <li class="page-item"><a class="page-link" asp-action="GetReports" asp-route-PeriodName="@Model.Data.PeriodName" asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate" asp-route-PageIndex="@Model.Data.PagesCount" asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate" asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate">آخرین صفحه</a></li>
 
         </ul>
     </nav>
@@ -154,6 +173,8 @@ else
 
     $(document).ready(function() {
       $(".date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
           calendar:{
         persian: {
             locale: 'en'
