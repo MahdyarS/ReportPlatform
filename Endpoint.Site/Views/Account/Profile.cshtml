@@ -1,0 +1,20 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.UserServices.GetUserInformationByIdService.UserInformationDto>
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1>پروفایل من</h1>
+
+<dl class="row mt-5">
+  <dt class="col-sm-3">نام و نام خانوادگی:</dt>
+  <dd class="col-sm-9">@Model.Data.FName @Model.Data.LName</dd>
+  <dt class="col-sm-3">موقعیت:</dt>
+  <dd class="col-sm-9">@Model.Data.Position</dd>
+  <dt class="col-sm-3">کدملی:</dt>
+  <dd class="col-sm-9">@Model.Data.NationalCode</dd>
+  <dt class="col-sm-3">ایمیل:</dt>
+  <dd class="col-sm-9">@Model.Data.Email</dd>
+  <dt class="col-sm-3">شماره موبایل:</dt>
+  <dd class="col-sm-9">@Model.Data.PhoneNumber</dd>
+</dl>
+

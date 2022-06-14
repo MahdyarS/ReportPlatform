@@ -1,8 +1,134 @@
-﻿@{
+﻿@model Reports.Application.Services.MutitaskServices.UserPanelHomePageService.UserPanelHomePageViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title" id="basic-layout-form">دسترسی های سریع به لیست گزارش ها از طریق المان پایین امکان پذیر است <i class="fas fa-arrow-down"></i></h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <a asp-controller="Reports" asp-action="GetReports">
+                        <button class="btn col-12 btn-lg btn-outline-success">
+                            لیست گزارش ها <i class="fas fa-list"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title" id="basic-layout-form">دسترسی های سریع به صفحه ایجاد گزارش از طریق المان پایین امکان پذیر است <i class="fas fa-arrow-down"></i></h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <a asp-controller="Reports" asp-action="AddNewReport">
+                        <button class="btn col-12 btn-lg btn-outline-primary">
+                            نوشتن گزارش جدید <i class="icon-note"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-primary">
+                    <h4 class="card-title" id="basic-layout-card-center">گزارش روزانه</h4>
+                </div>
+                <p class="mb-0">
+                <p class="textalign">
+                        @if (Model.SubmittedTodaysReport)
+                        {
+                    <p>
+                        گزارش امروز شما با موفقیت ثبت شده است <i style="color:green" class="fas fa-check"></i>
+                    </p>
+                        }
+                        else
+                        {
+                    <p>
+                        شما هنوز گزارش امروز خود را ثبت نکرده اید <i style="color:red" class="fas fa-exclamation-triangle"></i>
+                    </p>
+                        }
+                </p>
+                </p>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    @if (!Model.SubmittedTodaysReport)
+                    {
+                        <form class="form" asp-controller="Reports" asp-action="AddNewReport">
+                            <div class="form-body">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="timesheetinput5">زمان شروع</label>
+                                            <div class="position-relative has-icon-left">
+                                                <input type="time" id="timesheetinput5" class="form-control" name="BeginningTime">
+                                                <div class="form-control-position">
+                                                    <i class="ft-clock"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="timesheetinput6">زمان پایان</label>
+                                            <div class="position-relative has-icon-left">
+                                                <input type="time" id="timesheetinput6" class="form-control" name="FinishTime">
+                                                <div class="form-control-position">
+                                                    <i class="ft-clock"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label for="IsRemote">غیر حضوری</label>
+
+                                    <input type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
+
+                                </div>
+
+								<div class="form-group">
+									<label for="issueinput8">متن گزارش</label>
+									<textarea id="issueinput8" rows="8" class="form-control" name="ReportsDetail" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+									 data-title="Comments"></textarea>
+								</div>
+
+                                <div class="form-actions center">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="icon-note"></i> ثبت گزارش
+                                    </button>
+                                </div>
+                        </form>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

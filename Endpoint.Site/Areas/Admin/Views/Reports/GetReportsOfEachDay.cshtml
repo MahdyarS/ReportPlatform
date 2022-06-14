@@ -1,0 +1,161 @@
+﻿@model Reports.Helpers.Dtos.ResultDto.ResultDto<Reports.Application.Services.ReportServices.GetAllReportsOfOneDay.GetAllReportsOfOneDayResultDto>
+
+@{
+    ViewData["Title"] = "GetReportsOfEachDay";
+}
+
+<h1>گزارش ها بر اساس تاریخ</h1>
+<div class="row">
+    <form asp-action="GetReportsOfEachDay">
+        <label for="date">جستجوی گزارش ها در تاریخ:</label>
+        <input id="date" class="date col-2 form-control" type="text" name="Date" value="@(Model.Data?.SearchKeyDate ?? String.Empty)" />
+        <br />
+        <button type="submit" class="btn btn-outline-success">جستجو</button>
+    </form>
+</div>
+
+
+
+@if (!Model.Succeeded)
+{
+    <div class="alert alert-danger">
+        @Model.Message
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">
+        گزارش های کارکنان در تاریخ @Model.Data.SearchKeyDate
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-1">نام و نام خانوادگی</th>
+                <th class="col-1">ساعت شروع کار</th>
+                <th class="col-1">ساعت پایان کار</th>
+                <th class="col-1">مجموع ساعت کار</th>
+                <th class="col-6">متن گزارش کار</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data.ReportsList)
+            {
+                <tr>
+                    <td class="col-1">@item.UsersFirstName @item.UsersLastName</td>
+                    <td class="col-1">@item.StartWorkTime</td>
+                    <td class="col-1">@item.FinishWorkTime</td>
+                    <td class="col-1">@item.TotalWorkTime</td>
+                    <td class="col-6">@item.ReportsDescription</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+        <ul class="pagination" dir="ltr" style="direction:ltr !important">
+
+            <li class="page-item">
+                <a class="page-link"
+               asp-action="GetReportsOfEachDay"
+               asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
+               asp-route-PageIndex="1">
+                    اولین صفحه
+                </a>
+            </li>
+
+            @if (Model.Data.PrevIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-action="GetReportsOfEachDay"
+               asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
+               asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)">
+                        صفحه قبلی
+                    </a>
+                </li>
+
+            }
+            @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
+            {
+                if (i == Model.Data.RequestedPageIndex)
+                {
+                    <li class="page-item active"><a class="page-link" href="#">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+               asp-action="GetReportsOfEachDay"
+               asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
+               asp-route-PageIndex="@i">
+                            @i
+                        </a>
+                    </li>
+
+                }
+            }
+            @if (Model.Data.NextIsDisabled)
+            {
+                <li class="page-item disabled"><a class="page-link" href="">صفحه بعدی</a></li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-action="GetReportsOfEachDay"
+               asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
+               asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">
+                        صفحه بعدی
+                    </a>
+                </li>
+            }
+
+            <li class="page-item">
+                <a class="page-link"
+               asp-action="GetReportsOfEachDay"
+               asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
+               asp-route-PageIndex="@Model.Data.PagesCount">
+                    آخرین صفحه
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+
+
+
+}
+
+@section Scripts{
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+}
+

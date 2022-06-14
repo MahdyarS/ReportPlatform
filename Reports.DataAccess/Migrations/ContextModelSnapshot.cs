@@ -209,15 +209,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "89b1313e-0712-4453-bbae-aaa3aebe1cfe",
-                            ConcurrencyStamp = "7af59e42-3d85-430e-962a-9a0da59829ab",
+                            Id = "448f9c77-11e1-4442-a72d-60a385bb5e44",
+                            ConcurrencyStamp = "a21bb682-b9db-4e0c-8ed4-38f25dc0f5d5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8f1b35e6-15e1-4a84-a36c-ac8acf597860",
-                            ConcurrencyStamp = "838e3f70-b6da-4e94-ad67-271f354f09f0",
+                            Id = "7be1fc40-32af-430a-8fbd-204e2509e963",
+                            ConcurrencyStamp = "f6a61ebd-399c-419c-be62-45296fe0bd1a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -235,7 +235,8 @@ namespace Reports.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -243,6 +244,9 @@ namespace Reports.DataAccess.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -256,7 +260,7 @@ namespace Reports.DataAccess.Migrations
 
                     b.Property<string>("NationalCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(max)");
@@ -268,7 +272,7 @@ namespace Reports.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -287,6 +291,15 @@ namespace Reports.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Email");
+
+                    b.HasIndex("NationalCode")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.ToTable("Users");
                 });

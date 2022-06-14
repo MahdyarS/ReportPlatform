@@ -13,6 +13,8 @@ using Reports.Application.Services.PeriodServices.DeletePeriodService;
 using Reports.Application.Services.PeriodServices.GetPeriodByIdService;
 using Reports.Application.Services.PeriodServices.EditPeriodService;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
+using Reports.Helpers.Dtos.ResultDto;
 
 namespace Endpoint.Site.Controllers
 {
@@ -62,6 +64,11 @@ namespace Endpoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewReport(ReportToAddViewModel report)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(report);
+            }
+
             var result = await _addNewReportService.Execute(new ReportToAddRequestDto()
             {
                 BeginningTime = report.BeginningTime,
@@ -85,15 +92,24 @@ namespace Endpoint.Site.Controllers
 
         public IActionResult GetReports(GetReportsReportViewModelViewModel request)
         {
+            if (!ModelState.IsValid)
+            {
+                string message = ModelState.Values.Where(p => p.Errors.Count > 0).FirstOrDefault().Errors.FirstOrDefault().ErrorMessage;
+                return View(new ResultDto<GetUsersReportsResultDto>(false, message));
+            }
+
+
             var result = _getUserReportsListService.Execute(new GetReportServiceRequestDto()
             {
                 PeriodName = request.PeriodName,
                 ItemsInPageCount = request.ItemsInPageCount,
                 PageIndex = request.PageIndex,
                 SearchKeyDate = request.SearchKeyDate,
-                SearchKeyFinishPreriodDate = request.SearchKeyFinishPreriodDate,
-                SearchKeyStartPreriodDate = request.SearchKeyStartPreriodDate,
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                StartPreriod = request.StartPeriod,
+                FinishPreriod = request.FinishPeriod,
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                HasNoneRemoteReports = request.HasNoneRemoteReports == "False" ? false : true,
+                HasRemoteReports = request.HasRemoteReports == "False" ? false : true,
             });
             return View(result);
         }
@@ -102,13 +118,13 @@ namespace Endpoint.Site.Controllers
         public IActionResult EditReport(int ReportId)
         {
             var result = _getReportToEditById.Execute(ReportId, User.Identity.Name);
-            //User.Claims.
+
             if (!result.Succeeded)
             {
                 TempData["Error"] = result.Message;
                 return RedirectToAction("GetReports");
             }
-
+            //ViewBag.Error = "";
             return View(new EditReportViewModel
             {
                 BeginningTime = result.Data.BeginningTime,
@@ -154,7 +170,10 @@ namespace Endpoint.Site.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddPeriod(string start, string finish)
+        public IActionResult AddPeriod([RegularExpression(@"^(\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01]))",ErrorMessage ="تاریخ وارد شده صحیح نیست!")]
+                                        string start,
+                                        [RegularExpression(@"^(\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01]))",ErrorMessage ="تاریخ وارد شده صحیح نیست!")]
+                                        string finish)
         {
             return View(new AddPeriodViewModel
             {
@@ -166,6 +185,9 @@ namespace Endpoint.Site.Controllers
         [HttpPost]
         public IActionResult AddPeriod(AddPeriodViewModel request)
         {
+            if(!ModelState.IsValid)
+                return View(request);
+
             var result = _addNewPeriodService.Execute(new NewPeriodToAddRequestDto
             {
                 StartPeriodDate = request.StartPeriodDate,
@@ -189,6 +211,7 @@ namespace Endpoint.Site.Controllers
 
         public IActionResult PeriodsList(PeriodsListRequestModel request)
         {
+
             var result = _getPeriodsListService.Execute(new GetPeriodListRequestDto
             {
                 SearchKey = request.SearchKey,
@@ -196,12 +219,6 @@ namespace Endpoint.Site.Controllers
                 ItemsInPageCount = request.ItemsInPageCount,
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             });
-
-            if (!result.Succeeded)
-            {
-                ViewBag.Error = result.Message;
-                return View();
-            }
 
             return View(result);
         }
@@ -233,12 +250,6 @@ namespace Endpoint.Site.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = new List<string>();
-                foreach (var item in ModelState.Values.SelectMany(p => p.Errors))
-                {
-                    ViewBag.Errors.Add(item.ErrorMessage);
-                }
-
                 return View(request);
             }
 
@@ -254,7 +265,7 @@ namespace Endpoint.Site.Controllers
 
             if (!result.Succeeded)
             {
-                ViewData["Error"] = result.Message;
+                ViewBag.Error = result.Message;
                 return View(request);
             }
 

@@ -28,16 +28,20 @@
         <tbody>
             <tr>
                 <td>
-                    <input class="date form-control" type="text" name="startPeriodDate" value="@(Model.StartPeriodDate)" />
+                    <input asp-for="StartPeriodDate" class="date form-control" type="text" value="@(Model.StartPeriodDate)" />
+                    <span asp-validation-for="StartPeriodDate" class="text-danger"></span>
                 </td>
                 <td>
-                    <input class="date form-control" type="text" name="finishPeriodDate" value="@(Model.FinishPeriodDate)" />
+                    <input asp-for="FinishPeriodDate" class="date form-control" type="text" value="@(Model.FinishPeriodDate)" />
+                    <span asp-validation-for="FinishPeriodDate" class="text-danger"></span>
                 </td>
                 <td>
                     <input asp-for="PeriodName" class="form-control" />
+                    <span asp-validation-for="PeriodName" class="text-danger"></span>
                 </td>
                 <td class="col-6">
                     <textarea asp-for="PeriodDescription" class="form-control" rows="8"></textarea>
+                    <span asp-validation-for="PeriodDescription" class="text-danger"></span>
                 </td>
             </tr>
         </tbody>

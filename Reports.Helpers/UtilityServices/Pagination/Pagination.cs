@@ -22,22 +22,26 @@ namespace Reports.Helpers.UtilityServices.Pagination
 
                 };
 
-            else if (requestedPageIndex < 0 || requestedPageIndex > pagesCount)
-            {
-                return new PaginationResult<T>()
-                {
-                    Succeeded = false,
-                    Message = "صفحه درخواست شده خارج از محدوده است!",
-
-                };
-            }
-
             var result = new PaginationResult<T>()
             {
                 Succeeded = true,
-                RequestedPageList = source.Skip((requestedPageIndex - 1) * itemsInPageCount).Take(itemsInPageCount).ToList(),
                 PagesCount = pagesCount
             };
+
+            if (requestedPageIndex <= 0)
+            {
+                requestedPageIndex = 1;
+                result.OutOfRangeRequestedPage = true;
+            }
+
+            if (requestedPageIndex > pagesCount)
+            {
+                requestedPageIndex = pagesCount;
+                result.OutOfRangeRequestedPage = true;
+            }
+
+            result.RequestedPageList = source.Skip((requestedPageIndex - 1) * itemsInPageCount).Take(itemsInPageCount).ToList();
+            result.RequestedPageIndex = requestedPageIndex;
 
             if (requestedPageIndex == 1)
                 result.PrevIsDiabled = true;
@@ -57,18 +61,21 @@ namespace Reports.Helpers.UtilityServices.Pagination
             return result;
 
         }
-        public class PaginationResult<T>
-        {
-            public List<T>? RequestedPageList { get; set; } = null;
-            public int PagesCount { get; set; } = 1;
-            public bool Succeeded { get; set; }
-            public string Message { get; set; }
-            public bool PrevIsDiabled { get; set; }
-            public bool NextIsDisabled { get; set; }
-            public int FirstPageIndexToShow { get; set; }
-            public int LastPageIndexToShow { get; set; }
-            public bool isEmptyList { get; set; }
-            public bool OutOfRangeRequestedPage { get; set; }
-        }
+
     }
+    public class PaginationResult<T>
+    {
+        public List<T>? RequestedPageList { get; set; } = null;
+        public int RequestedPageIndex { get; set; }
+        public int PagesCount { get; set; } = 1;
+        public bool Succeeded { get; set; }
+        public string Message { get; set; }
+        public bool PrevIsDiabled { get; set; }
+        public bool NextIsDisabled { get; set; }
+        public int FirstPageIndexToShow { get; set; }
+        public int LastPageIndexToShow { get; set; }
+        public bool isEmptyList { get; set; }
+        public bool OutOfRangeRequestedPage { get; set; } = false;
+    }
+
 }

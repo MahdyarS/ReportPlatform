@@ -13,6 +13,8 @@
 }
 
 <form asp-controller="Reports" asp-action="AddNewReport" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
     <table class="table">
         <thead>
             <tr>
@@ -28,18 +30,27 @@
             <tr>
                 <td>
                     <input type="text" id="date" asp-for="Date" class="form-control">
+                    <span asp-validation-for="Date" class="text-danger"></span>
+
                 </td>
                 <td>
                     <input type="time" asp-for="BeginningTime" class="form-control" />
+                    <span asp-validation-for="BeginningTime" class="text-danger"></span>
+
                 </td>
                 <td>
                     <input type="time" asp-for="FinishTime" class="form-control" />
+                    <span asp-validation-for="FinishTime" class="text-danger"></span>
+
                 </td>
                 <td>
-                    <input asp-for="IsRemote" />
+                    @*<input asp-for="IsRemote" />*@
+                    <input type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
                 </td>
                 <td class="col-6">
                     <textarea rows="8" class="col-12 form-control" asp-for="ReportsDetail"></textarea>
+                    <span asp-validation-for="ReportsDetail" class="text-danger"></span>
+
                 </td>
             </tr>
 

@@ -22,7 +22,7 @@ namespace Reports.Application.Services.UserServices.RegisterUserService
             {
                 FirstName = request.FName,
                 LastName = request.LName,
-                NationalCode = request.NationalCode.ToString(),
+                NationalCode = request.NationalCode,
                 Position = request.Position,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
@@ -30,8 +30,22 @@ namespace Reports.Application.Services.UserServices.RegisterUserService
             };
 
 
+            User userWithSameInformations = _userManager.Users
+                .Where(p => p.PhoneNumber == request.PhoneNumber || p.UserName == request.Email || p.NationalCode == request.NationalCode)
+                .FirstOrDefault();
+            if (userWithSameInformations != null)
+            {
+                if (userWithSameInformations.PhoneNumber == request.PhoneNumber)
+                    return new ResultDto(false, $"این شماره موبایل به {userWithSameInformations.FirstName} {userWithSameInformations.LastName} اختصاص یافته است!");
+                if (userWithSameInformations.Email == request.Email)
+                    return new ResultDto(false, $"این ایمیل به {userWithSameInformations.FirstName} {userWithSameInformations.LastName} اختصاص یافته است!");
+                if (userWithSameInformations.NationalCode == request.NationalCode)
+                    return new ResultDto(false, $"این کدملی به {userWithSameInformations.FirstName} {userWithSameInformations.LastName} اختصاص یافته است!");
+            }
+
+
             var result = await _userManager.CreateAsync(user,request.Password);
-            var addingRoleResult = _userManager.AddToRoleAsync(user, RoleName.User.ToString());
+            var addingRoleResult = await _userManager.AddToRoleAsync(user, RoleName.User.ToString());
 
             if (result.Succeeded)
                 return new ResultDto(true, "ثبت کاربر با موفقیت انجام شد!");

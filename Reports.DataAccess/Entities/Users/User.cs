@@ -14,6 +14,7 @@ namespace Reports.DataAccess.Entities.Users
         public string LastName { get; set; }
         public string NationalCode { get; set; }
         public string Position { get; set; }
+        public bool IsRemoved { get; set; } = false;
 
 
         public virtual ICollection<Report> Reports { get; set; }

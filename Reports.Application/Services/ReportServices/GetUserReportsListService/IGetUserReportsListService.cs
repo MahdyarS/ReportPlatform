@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Reports.Helpers.UtilityServices.DateConversionService;
 using Microsoft.EntityFrameworkCore;
+using Reports.DataAccess.Entities.Reports;
+using Reports.Helpers.UtilityServices.FilterResults;
 
 namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 {
@@ -28,50 +30,53 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 
         public ResultDto<GetUsersReportsResultDto> Execute(GetReportServiceRequestDto request)
         {
-            bool isEmptySearchKey = request.SearchKeyDate == "" || request.SearchKeyDate == null ? true : false;
-            DateTime searchKeyDate = new DateTime();
-
-            if (!isEmptySearchKey)
-                searchKeyDate = request.SearchKeyDate.ShamsiStringToDateTime();
-
-
-            bool isEmptyPeriod = request.SearchKeyStartPreriodDate == "" || request.SearchKeyDate == null ? true : false;
-            DateTime StartPeriod = new DateTime();
-            DateTime FinishPeriod = new DateTime();
-
-
-            var query = _context.Reports.Where(p => (((isEmptySearchKey && isEmptyPeriod) ||
-                                                                (!isEmptySearchKey && p.Date == searchKeyDate) ||
-                                                                (!isEmptyPeriod && p.Date <= FinishPeriod && p.Date >= StartPeriod))) &&
-                                                                p.UserId == request.UserId);
-            
-
-            string totalWorkHours = "";
-
-            if (!isEmptyPeriod)
+            var result = new ResultDto<GetUsersReportsResultDto>(false, "")
             {
-                StartPeriod = request.SearchKeyStartPreriodDate.ShamsiStringToDateTime();
-                if (request.SearchKeyFinishPreriodDate == "")
-                    FinishPeriod = DateTime.Now;
-
-                else
-                    FinishPeriod = request.SearchKeyFinishPreriodDate.ShamsiStringToDateTime();
-
-                if (FinishPeriod < StartPeriod)
-                    return new ResultDto<GetUsersReportsResultDto>(false, "بازه داده شده معتبر نیست!")
-                    {
-                        Data = new GetUsersReportsResultDto
-                        {
-                            UserId = request.UserId,
-                            UsersFirstName = request.UsersFirstName,
-                            UsersLastName = request.UsersLastName
-                        }
-                    };
-
-                var totalTicks = query.Select(p => new { WorkTimeInDay = p.FinishWorkTime.Subtract(p.StartWorkTime) }).ToList().Sum(p => p.WorkTimeInDay.Ticks);
-                totalWorkHours = new TimeSpan(totalTicks).ToString("hh':'mm");
+                Data = new GetUsersReportsResultDto
+                {
+                    UserId = request.UserId,
+                    UsersFirstName = request.UsersFirstName,
+                    UsersLastName = request.UsersLastName,
+                    StartPeriod = request.StartPreriod,
+                    FinishPeriod = request.FinishPreriod,
+                    SearchKeyDate = request.SearchKeyDate,
+                    PeriodName = request.PeriodName,
+                    RequestedPageIndex = request.PageIndex,
+                    HasRemoteReports = request.HasRemoteReports,
+                    HasNoneRemoteReports = request.HasNoneRemoteReports
+                    
+                }
+            };
+            var dateValidationResult = DateValidate(request.StartPreriod, request.FinishPreriod, request.SearchKeyDate);
+            if(dateValidationResult.IsInvalidPeriod)
+            {
+                result.Message = "بازه وارد شده معتبر نیست!";
+                return result;
             }
 
+            result.Data.PeriodIsSearched = dateValidationResult.PeriodIsSearched;
+            result.Data.SpecificDateisSearched = dateValidationResult.SpecificDateIsSearched;
+
+            var reportFiltersList = new List<IFilterService<Report>>();
+            reportFiltersList.Add(new PeriodFilter(dateValidationResult.StartPeriod, dateValidationResult.FinishPeriod));
+            reportFiltersList.Add(new SpecificDateFilter(dateValidationResult.SearchKeyDate));
+            reportFiltersList.Add(new RemoteOrNoneRemoteFilter(request.HasRemoteReports, request.HasNoneRemoteReports));
+
+            var query = _context.Reports.ApplyFilters(reportFiltersList).OrderByDescending(p => p.Date);
+
+            if (dateValidationResult.PeriodIsSearched)
+            {
+                var totalTicks = query.Select(p => new { WorkTimeInDay = p.FinishWorkTime.Subtract(p.StartWorkTime) });
+
+                double totalMinutes = 0;
+                foreach (var item in totalTicks)
+                {
+                    totalMinutes += item.WorkTimeInDay.TotalMinutes;
+                }
+                int MinutestToShow = (int)totalMinutes % 60;
+                int HoursToShow = (int)(totalMinutes) / 60;
+                result.Data.TotalHoursWorkedInPeriod = HoursToShow.ToString() + ":" + MinutestToShow.ToString();
+            }
 
             var paginationResult = query.Select(p => new ReportToShowDto
             {
@@ -82,69 +87,124 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                 ReportsDetail = p.ReportsDetail,
                 IsRemote = p.IsRemote ? "غیرحضوری" : "حضوری",
                 WorkTime = p.FinishWorkTime.Subtract(p.StartWorkTime).ToString("hh':'mm"),
-            }).ToPaged(request.PageIndex, request.ItemsInPageCount);
-
-
+            })
+            .ToPaged(request.PageIndex, request.ItemsInPageCount);
 
             if (!paginationResult.Succeeded)
             {
-                if (paginationResult.PagesCount == 0)
-                    return new ResultDto<GetUsersReportsResultDto>(false, "گزارشی در تاریخ مورد نظر ثبت نشده است!")
-                    {
-                        Data = new GetUsersReportsResultDto
-                        {
-                            UserId = request.UserId,
-                            UsersFirstName = request.UsersFirstName,
-                            UsersLastName = request.UsersLastName
-                        }
-                    };
-
-                return new ResultDto<GetUsersReportsResultDto>(false, paginationResult.Message)
-                {
-                    Data = new GetUsersReportsResultDto
-                    {
-                        UserId = request.UserId,
-                        UsersFirstName = request.UsersFirstName,
-                        UsersLastName = request.UsersLastName
-                    }
-                };
-
+                result.Message = paginationResult.Message;
+                return result;
             }
 
-            var result = new ResultDto<GetUsersReportsResultDto>(true, paginationResult.Message)
-            {
-                Data = new GetUsersReportsResultDto
-                {
-                    FirstPageIndexToShow = paginationResult.FirstPageIndexToShow,
-                    LastPageIndexToShow = paginationResult.LastPageIndexToShow,
-                    NextIsDisabled = paginationResult.NextIsDisabled,
-                    PagesCount = paginationResult.PagesCount,
-                    PrevIsDisabled = paginationResult.PrevIsDiabled,
-                    RequestedPageIndex = request.PageIndex,
-                    RequestedSearchKeyDate = request.SearchKeyDate,
-                    ReportsList = paginationResult.RequestedPageList,
-                    PeriodIsSearched = !isEmptyPeriod,
-                    SpecificDateisSearched = !isEmptySearchKey,
-                    SearchKeyStartPreriodDate = request.SearchKeyStartPreriodDate,
-                    SearchKeyFinishPreriodDate = request.SearchKeyFinishPreriodDate,
-                    TotalHoursWorkedInPeriod = totalWorkHours,
-                    UserId = request.UserId,
-                    UsersFirstName = request.UsersFirstName,
-                    UsersLastName = request.UsersLastName,
-                    PeriodName = request.PeriodName
-                }
-            };
+            result.Succeeded = true;
+            result.Data.ReportsList = paginationResult.RequestedPageList;
+            result.Data.PrevIsDisabled = paginationResult.PrevIsDiabled;
+            result.Data.NextIsDisabled = paginationResult.NextIsDisabled;
+            result.Data.FirstPageIndexToShow = paginationResult.FirstPageIndexToShow;
+            result.Data.LastPageIndexToShow = paginationResult.LastPageIndexToShow;
+            result.Data.PagesCount = paginationResult.PagesCount;
+            result.Data.RequestedPageIndex = paginationResult.RequestedPageIndex;
 
             return result;
         }
+
+        private DateValidationResultDto DateValidate(string startPeriod,string finishPeriod,string searchKeyDate)
+        {
+            var result = new DateValidationResultDto();
+            if (!String.IsNullOrEmpty(searchKeyDate))
+            {
+                result.SearchKeyDate = searchKeyDate.ShamsiStringToDateTime();
+                result.SpecificDateIsSearched = true;
+            }
+            else if(!String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod))
+            {
+                result.StartPeriod = startPeriod.ShamsiStringToDateTime();
+                result.FinishPeriod = finishPeriod.ShamsiStringToDateTime();
+                if (result.StartPeriod > result.FinishPeriod)
+                    result.IsInvalidPeriod = true;
+                result.PeriodIsSearched = true;
+            }
+            if((!String.IsNullOrEmpty(startPeriod) && String.IsNullOrEmpty(finishPeriod)) || (String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod)))
+            {
+                result.IsInvalidPeriod = true;
+                result.PeriodIsSearched = true;
+            }
+            return result;
+        }
+
     }
 
+    public class DateValidationResultDto
+    {
+        public bool SpecificDateIsSearched { get; set; } = false;
+        public bool PeriodIsSearched { get; set; } = false;
+        public bool IsInvalidPeriod { get; set; } = false;
+        public DateTime? StartPeriod { get; set; }
+        public DateTime? FinishPeriod { get; set; }
+        public DateTime? SearchKeyDate { get; set; }
+    }
+    public class RemoteOrNoneRemoteFilter : IFilterService<Report>
+    {
+        public bool HasRemoteReports { get; set; } = true;
+        public bool HasNoneRemoteReports { get; set; } = true;
+
+        public RemoteOrNoneRemoteFilter(bool hasRemoteReports, bool hasNoneRemoteReports)
+        {
+            HasRemoteReports = hasRemoteReports;
+            HasNoneRemoteReports = hasNoneRemoteReports;
+        }
+
+        public IEnumerable<Report> Execute(IEnumerable<Report> source)
+        {
+            if(!HasRemoteReports && !HasNoneRemoteReports)
+                return source.Where(p => false);
+            if(!HasRemoteReports && HasNoneRemoteReports)
+                return source.Where(p => p.IsRemote == false);
+            if(HasRemoteReports && !HasNoneRemoteReports)
+                return source.Where(p => p.IsRemote);
+            return source;
+        }
+    }
+    public class SpecificDateFilter : IFilterService<Report>
+    {
+        public DateTime? SearchKeyDate { get; set; }
+
+        public SpecificDateFilter(DateTime? searchKeyDate)
+        {
+            SearchKeyDate = searchKeyDate;
+        }
+
+        public IEnumerable<Report> Execute(IEnumerable<Report> source)
+        {
+            if (this.SearchKeyDate == null)
+                return source;
+            return source.Where(p => p.Date == this.SearchKeyDate);
+        }
+    }
+    public class PeriodFilter : IFilterService<Report>
+    {
+        public DateTime? StartPeriod { get; set; }
+        public DateTime? FinishPeriod { get; set; }
+
+        public PeriodFilter(DateTime? startPeriod, DateTime? finishPeriod)
+        {
+            StartPeriod = startPeriod;
+            FinishPeriod = finishPeriod;
+        }
+
+        public IEnumerable<Report> Execute(IEnumerable<Report> source)
+        {
+            if (this.StartPeriod == null || this.FinishPeriod == null)
+                return source;
+            return source.Where(p => p.Date >= this.StartPeriod && p.Date <= this.FinishPeriod);
+
+        }
+    }
     public class GetUsersReportsResultDto
     {
         public List<ReportToShowDto>? ReportsList { get; set; }
         public string TotalHoursWorkedInPeriod { get; set; }
         public int RequestedPageIndex { get; set; }
-        public string RequestedSearchKeyDate { get; set; }
         public bool PrevIsDisabled { get; set; }
         public bool NextIsDisabled { get; set; }
         public int FirstPageIndexToShow { get; set; }
@@ -152,12 +212,15 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
         public int PagesCount { get; set; }
         public bool PeriodIsSearched { get; set; }
         public bool SpecificDateisSearched { get; set; }
-        public string SearchKeyStartPreriodDate { get; set; }
-        public string SearchKeyFinishPreriodDate { get; set; }
+        public string SearchKeyDate { get; set; } = "";
+        public string StartPeriod { get; set; } = "";
+        public string FinishPeriod { get; set; } = "";
         public string UserId { get; set; }
         public string UsersFirstName { get; set; }
         public string UsersLastName { get; set; }
         public string PeriodName { get; set; }
+        public bool HasRemoteReports { get; set; }
+        public bool HasNoneRemoteReports { get; set; }
     }
 
     public class ReportToShowDto
@@ -177,11 +240,13 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
         public string UsersFirstName { get; set; } = "";
         public string UsersLastName { get; set; } = "";
         public string SearchKeyDate { get; set; } = "";
-        public string SearchKeyStartPreriodDate { get; set; } = "";
-        public string SearchKeyFinishPreriodDate { get; set; } = "";
+        public string StartPreriod { get; set; } = "";
+        public string FinishPreriod { get; set; } = "";
         public int PageIndex { get; set; } = 1;
         public int ItemsInPageCount { get; set; } = 1;
         public string UserId { get; set; }
+        public bool HasRemoteReports { get; set; } = true;
+        public bool HasNoneRemoteReports { get; set; } = true;
     }
 
 

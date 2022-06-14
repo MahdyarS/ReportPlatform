@@ -32,6 +32,7 @@ namespace Reports.DataAccess.Contexts
             builder.ApplyConfiguration(new ReportConfigs());
             builder.ApplyConfiguration(new RoleConfigs());
             builder.ApplyConfiguration(new PeriodConfigs());
+            builder.ApplyConfiguration(new UserConfigs());
         }
 
     }

@@ -20,9 +20,7 @@
   <ItemGroup>
     <Folder Include="Services\InfrastructureServices\" />
     <Folder Include="Services\UserServices\EmailConfirmationServices\" />
-    <Folder Include="Services\UserServices\EditUserService\" />
     <Folder Include="Services\UserServices\ResetPasswordService\" />
-    <Folder Include="Services\UserServices\ToggleUsersStatusService\" />
   </ItemGroup>
 
 </Project>

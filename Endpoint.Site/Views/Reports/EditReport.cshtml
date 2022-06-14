@@ -35,15 +35,21 @@
                 </td>
                 <td>
                     <input type="time" asp-for="BeginningTime" />
+                    <span asp-validation-for="BeginningTime" class="text-danger"></span>
+
                 </td>
                 <td>
                     <input type="time" asp-for="FinishTime" />
+                    <span asp-validation-for="FinishTime" class="text-danger"></span>
+
                 </td>
                 <td>
                     <input asp-for="IsRemote" />
                 </td>
                 <td class="col-6">
                     <textarea rows="8" class="col-12" asp-for="ReportsDetail"></textarea>
+                    <span asp-validation-for="ReportsDetail" class="text-danger"></span>
+
                 </td>
             </tr>
 

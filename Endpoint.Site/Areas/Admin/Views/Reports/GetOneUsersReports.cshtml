@@ -16,30 +16,87 @@ else
     <h1>لیست گزارش های @Model.Data.UsersFirstName @Model.Data.UsersLastName</h1>
 
 
-    <div class="row">
+    @*    <div class="row">
         <form asp-action="GetOneUsersReports">
-            <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
-            <input type="text" class="date form-control col-2" id="date" name="searchKeydate" />
-            <input type="hidden" name="UserId" value="@Model.Data.UserId" />
-            <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
-            <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
-            <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+        <input type="text" class="date form-control col-2" id="date" name="searchKeydate" value="@Model.Data.SearchKeyDate" />
+        <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+        <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+        <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
         </form>
-    </div>
 
-    <div class="row">
         جستجوی گزارش ها در بازه:
         <form asp-action="GetOneUsersReports">
+        <label>از تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="startPeriod" value="@(Model.Data.StartPeriod)" />
+        <label>تا تاریخ:</label>
+        <input class="date form-control col-2" type="text" name="finishPeriod" value="@(Model.Data.FinishPeriod)" />
+        <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+        <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+        <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+        </form>
+        </div>
+    *@
+    <div class="row">
+
+        <form class="col-4" asp-action="GetOneUsersReports">
+            جستجوی گزارش ها در بازه:
+            <br />
             <label>از تاریخ:</label>
-            <input class="date form-control col-2" type="text" name="searchKeyStartPreriodDate" />
+            <input class="date form-control col-4" type="text" name="startPeriod" value="@(Model.Data.StartPeriod)" />
             <label>تا تاریخ:</label>
-            <input class="date form-control col-2" type="text" name="searchKeyFinishPreriodDate" />
+            <input class="date form-control col-4" type="text" name="finishPeriod" value="@(Model.Data.FinishPeriod)" />
+            <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
+            <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
             <input type="hidden" name="UserId" value="@Model.Data.UserId" />
             <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
             <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
             <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
         </form>
+
+
+        <form class="col-4" asp-action="GetOneUsersReports">
+            <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+            <input type="text" class="date form-control col-4" id="date" name="searchKeydate" value="@(Model.Data.SearchKeyDate)" />
+            <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
+            <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
+            <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+            <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+            <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+            <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+        </form>
+
+        <form class="col" asp-action="GetOneUsersReports">
+            <div>
+                فیلتر کردن گزارش ها بر اساس حضوری/غیرحضوری:
+            </div>
+            <div class="form-check mt-3">
+
+                <input name="" class="form-check-input" type="checkbox" id="hasNoneRemote">
+                <label class="form-check-label" for="flexCheckDefault">
+                    نمایش گزارش های حضوری
+                </label>
+            </div>
+            <div class="form-check">
+                <input name="" class="form-check-input" type="checkbox" id="hasRemote">
+                <label class="form-check-label" for="flexCheckChecked">
+                    نمایش گزارش های غیر حضوری
+                </label>
+                <input name="hasNoneRemoteReports" id="hasNoneRemoteValue" type="hidden" />
+                <input name="hasRemoteReports" id="hasRemoteValue" type="hidden" />
+                <input name="searchKeydate" type="hidden" value="@Model.Data.SearchKeyDate" />
+                <input name="startPeriod" type="hidden" value="@Model.Data.StartPeriod" />
+                <input name="finishPeriod" type="hidden" value="@Model.Data.FinishPeriod" />
+                <input type="hidden" name="UserId" value="@Model.Data.UserId" />
+                <input type="hidden" name="UsersFirstName" value="@Model.Data.UsersFirstName" />
+                <input type="hidden" name="UsersLastName" value="@Model.Data.UsersLastName" />
+            </div>
+            <button class="btn btn-outline-secondary mt-2" type="submit">اعمال فیلتر</button>
+        </form>
     </div>
+
 
 
     @if (!Model.Succeeded)
@@ -52,20 +109,20 @@ else
     {
         @if (Model.Data.SpecificDateisSearched)
         {
-            <div class="alert alert-success">
-                نمایش گزارش در تاریخ: @Model.Data.RequestedSearchKeyDate
+            <div class="alert alert-secondary">
+                نمایش گزارش در تاریخ: @Model.Data.SearchKeyDate
             </div>
         }
         else if (Model.Data.PeriodIsSearched)
         {
-            <div class="row d-flex justify-content-between alert alert-success">
-                @if(!String.IsNullOrEmpty(Model.Data.PeriodName))
+            <div class="row d-flex justify-content-between alert alert-secondary">
+                @if (!String.IsNullOrEmpty(Model.Data.PeriodName))
                 {
                     <h3>
                         بازه @Model.Data.PeriodName ایجاد شده توسط @Model.Data.UsersFirstName @Model.Data.UsersLastName
                     </h3>
                 }
-                <div>نمایش گزارش ها از تاریخ @Model.Data.SearchKeyStartPreriodDate تا تاریخ @Model.Data.SearchKeyFinishPreriodDate</div>
+                <div>نمایش گزارش ها از تاریخ @Model.Data.StartPeriod تا تاریخ @Model.Data.FinishPeriod</div>
                 <div>مجموع ساعت کار در این بازه @Model.Data.TotalHoursWorkedInPeriod ساعت است</div>
             </div>
         }
@@ -112,9 +169,11 @@ else
                asp-route-UserId="@Model.Data.UserId"
                asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                asp-route-UsersLastName="@Model.Data.UsersLastName"
-               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
-               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
-               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-SearchKeyDate="@Model.Data.SearchKeyDate"
+               asp-route-StartPeriod="@Model.Data.StartPeriod"
+               asp-route-FinishPeriod="@Model.Data.FinishPeriod"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-PeriodName="@Model.Data.PeriodName"
                asp-route-PageIndex="1">
                         اولین صفحه
@@ -133,9 +192,11 @@ else
                asp-route-UserId="@Model.Data.UserId"
                asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                asp-route-UsersLastName="@Model.Data.UsersLastName"
-               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
-               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
-               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-SearchKeyDate="@Model.Data.SearchKeyDate"
+               asp-route-StartPeriod="@Model.Data.StartPeriod"
+               asp-route-FinishPeriod="@Model.Data.FinishPeriod"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-PeriodName="@Model.Data.PeriodName"
                asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)">
                             صفحه قبلی
@@ -157,9 +218,11 @@ else
                asp-route-UserId="@Model.Data.UserId"
                asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                asp-route-UsersLastName="@Model.Data.UsersLastName"
-               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
-               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
-               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-SearchKeyDate="@Model.Data.SearchKeyDate"
+               asp-route-StartPeriod="@Model.Data.StartPeriod"
+               asp-route-FinishPeriod="@Model.Data.FinishPeriod"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-PeriodName="@Model.Data.PeriodName"
                asp-route-PageIndex="@i">
                                 @i
@@ -180,9 +243,11 @@ else
                asp-route-UserId="@Model.Data.UserId"
                asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                asp-route-UsersLastName="@Model.Data.UsersLastName"
-               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
-               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
-               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-SearchKeyDate="@Model.Data.SearchKeyDate"
+               asp-route-StartPeriod="@Model.Data.StartPeriod"
+               asp-route-FinishPeriod="@Model.Data.FinishPeriod"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-PeriodName="@Model.Data.PeriodName"
                asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">
                             صفحه بعدی
@@ -196,11 +261,13 @@ else
                asp-route-UserId="@Model.Data.UserId"
                asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                asp-route-UsersLastName="@Model.Data.UsersLastName"
-               asp-route-SearchKeyDate="@Model.Data.RequestedSearchKeyDate"
-               asp-route-SearchKeyStartPreriodDate="@Model.Data.SearchKeyStartPreriodDate"
-               asp-route-SearchKeyFinishPreriodDate="@Model.Data.SearchKeyFinishPreriodDate"
+               asp-route-SearchKeyDate="@Model.Data.SearchKeyDate"
+               asp-route-StartPeriod="@Model.Data.StartPeriod"
+               asp-route-FinishPeriod="@Model.Data.FinishPeriod"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-PeriodName="@Model.Data.PeriodName"
-               asp-route-PageIndex="@Model.Data.PagesCount">
+x               asp-route-PageIndex="@Model.Data.PagesCount">
                         آخرین صفحه
                     </a>
                 </li>
@@ -214,10 +281,51 @@ else
 
 <script src="~/js/persian-datepicker.min.js"></script>
 
+<script>
+
+    var hasRemote = @Json.Serialize(Model.Data.HasRemoteReports);
+    var hasNoneRemote = @Json.Serialize(Model.Data.HasNoneRemoteReports);
+
+    $(document).ready(function(){
+            $('#hasRemote').prop('checked',hasRemote);
+            $('#hasNoneRemote').prop('checked',hasNoneRemote);
+
+            $('#hasRemoteValue').prop('value',hasRemote? 'True':'False');
+            $('#hasNoneRemoteValue').prop('value',hasNoneRemote? 'True':'False');
+    })
+
+    $('#hasRemote').on('change',function(){
+
+        if ($('#hasRemote').is(':checked')) {
+            $('#hasRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasRemoteValue').attr('value', 'False');
+          }
+
+
+    })
+    $('#hasNoneRemote').on('change',function(){
+
+        if ($('#hasNoneRemote').is(':checked')) {
+            $('#hasNoneRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasNoneRemoteValue').attr('value', 'False');
+          }
+
+
+    })
+
+</script>
+
+
+
 <script type="text/javascript">
 
     $(document).ready(function() {
       $(".date").pDatepicker({
+                    initialValue:true,
+          initialValueType:'persian',
+
           calendar:{
         persian: {
             locale: 'en'

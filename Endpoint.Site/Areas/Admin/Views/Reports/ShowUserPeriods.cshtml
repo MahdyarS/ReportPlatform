@@ -21,25 +21,19 @@
         </div>
     </form>
 </div>
-@if(Model.Data.PagesCount == 0)
-{
-    <div class='alert alert-secondary'>
-        @Model.Message
-    </div>
-    return;
-}
 
-@if (ViewBag.Error != null)
+@if (!Model.Succeeded)
 {
     <div class="alert alert-danger">
-        @ViewBag.Error
+        @Model.Message
     </div>
+
 }
 else
 {
     @if(Model.Data.RequestedSearchKey != "")
     {
-        <div class="alert alert-success">
+        <div class="alert alert-secondary">
             نتایج جستجو برای "@Model.Data.RequestedSearchKey":
         </div>
     }

@@ -3,21 +3,9 @@
     ViewData["Title"] = "UsersList";
 }
 
-@if (TempData["Message"] != "" && TempData["Message"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Message"]
-    </div>
-}
 
 <h1>لیست کاربران</h1>
 
-@if(TempData["Message"] != null && TempData["Message"] != "")
-{
-    <div class="alert alert-success">
-        @TempData["Message"]
-    </div>
-}
 
 <div class="p-3 col-12 bg-light shadow-lg mt-3 mb-5" dir="ltr">
     <form action="UsersList" method="post">
@@ -29,6 +17,19 @@
     </form>
 </div>
 
+@if (TempData["Message"] != null && TempData["Message"] != "")
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+@if(TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 
 @if (!Model.Succeeded)
 {
@@ -37,7 +38,7 @@
     </div>
     return;
 }
-else if (Model.Data.RequestedSearchKey != "")
+else if (!String.IsNullOrEmpty(Model.Data.RequestedSearchKey))
 {
     <div class="alert alert-success">
         نمایش نتایج برای : @Model.Data.RequestedSearchKey
@@ -63,15 +64,17 @@ else if (Model.Data.RequestedSearchKey != "")
         @foreach (var item in Model.Data.UsersList)
         {
             <tr>
+                <td class="d-none">@item.UserId</td>
                 <td>@item.FName</td>
                 <td>@item.LName</td>
                 <td>@item.Position</td>
                 <td>@item.PhoneNumber</td>
                 <td>
                     @*<button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#UserEditModal">جزئیات</button>*@
-                    
+
+                    <a asp-area="Admin" asp-controller="Users" asp-action="UserInformation" asp-route-UserId="@item.UserId"><button class="btn btn-info">اطلاعات</button></a>
                     <a asp-area="Admin" asp-controller="Reports" asp-action="ShowUserPeriods" asp-route-UserId="@item.UserId" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName"><button class="btn btn-info">بازه ها</button></a>
-                    <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName" asp-route-UserName="@item.UserId"><button class="btn btn-info">گزارش ها</button></a>
+                    <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName" asp-route-UserId="@item.UserId"><button class="btn btn-info">گزارش ها</button></a>
 
                     @if (item.IsDisabled)
                     {
@@ -97,16 +100,19 @@ else if (Model.Data.RequestedSearchKey != "")
 <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
     <ul class="pagination" dir="ltr" style="direction:ltr !important">
 
-        <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=1">اولین صفحه</a></li>
+        @*<li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=1">اولین صفحه</a></li>*@
+        <li class="page-item"><a class="page-link" asp-action="UsersList" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="1">اولین صفحه</a></li>
 
 
         @if (Model.Data.PrevIsDiabled)
         {
             <li class="page-item disabled"><a class="page-link" href="">صفحه قبلی</a></li>
+
         }
         else
         {
-            <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.RequestedPageIndex-1)">صفحه قبلی</a></li>
+            <li class="page-item"><a class="page-link" asp-action="UsersList" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)">صفحه قبلی</a></li>
+
         }
         @for (int i = Model.Data.FirstPageIndexToShow; i <= Model.Data.LastPageIndexToShow; i++)
         {
@@ -116,7 +122,7 @@ else if (Model.Data.RequestedSearchKey != "")
             }
             else
             {
-                <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@i">@i</a></li>
+                <li class="page-item"><a class="page-link" asp-action="UsersList" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@i">@i</a></li>
             }
         }
         @if (Model.Data.NextIsDisabled)
@@ -125,10 +131,10 @@ else if (Model.Data.RequestedSearchKey != "")
         }
         else
         {
-            <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.RequestedPageIndex+1)">صفحه بعدی</a></li>
+            <li class="page-item"><a class="page-link" asp-action="UsersList" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">اولین صفحه</a></li>
         }
 
-        <li class="page-item"><a class="page-link" href="UsersList?searchkey=@Model.Data.RequestedSearchKey&pageIndex=@(Model.Data.PagesCount)">آخرین صفحه</a></li>
+        <li class="page-item"><a class="page-link" asp-action="UsersList" asp-route-SearchKey="@Model.Data.RequestedSearchKey" asp-route-PageIndex="@(Model.Data.PagesCount)">آخرین صفحه</a></li>
 
     </ul>
 </nav>
@@ -138,67 +144,128 @@ else if (Model.Data.RequestedSearchKey != "")
 
 @section Scripts{
 
-    <script>
-        $('.disableInable').on('click', disable);
+<script>
 
-        function disable(e) {
-            var userName = e.target.parentElement.parentElement.children[0].innerText;
-            var toBeToggledStatus = e.target.textContent;
+    $('.disableInable').on('click', disable);
+    $('.remove').on('click', deleteUser);
 
-            swal.fire({
-                title: `${toBeToggledStatus}`,
-                text: `آیا از ${toBeToggledStatus} این کاربر مطمئن هستید؟`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'بله انجام شود',
-                cancelButtonText: 'خیر'
 
-            }).then(result => {
-                if (!result.value) {
-                    return;
+    function disable(e) {
+        var userId = e.target.parentElement.parentElement.children[0].innerText;
+        var toBeToggledStatus = e.target.textContent;
+
+        swal.fire({
+            title: `${toBeToggledStatus}`,
+            text: `آیا از ${toBeToggledStatus} این کاربر مطمئن هستید؟`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'بله انجام شود',
+            cancelButtonText: 'خیر'
+
+        }).then(result => {
+            if (!result.value) {
+                return;
+            }
+            else {
+
+                var toSend = {
+                    "userId": userId
                 }
-                else {
 
-                    var toSend = {
-                        "userName": userName
-                    }
+                $.ajax({
+                    contentType: "application/x-www-form-urlencoded",
+                    dataType: "json",
+                    type: "POST",
+                    url: "ToggleUsersStatus",
+                    data: toSend,
+                    success: data => {
+                        if (data.succeeded) {
+                            swal.fire({
+                                title: "موفق!",
+                                text: data.message,
+                                icon: "success",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
 
-                    $.ajax({
-                        contentType: "application/x-www-form-urlencoded",
-                        dataType: "json",
-                        type: "POST",
-                        url: "ToggleUser",
-                        data: toSend,
-                        success: data => {
-                            if (data.succeeded) {
-                                swal.fire({
-                                    title: "موفق!",
-                                    text: data.message,
-                                    icon: "success",
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: "باشه"
+                            }).then(p => location.reload());
+                        } else {
+                            swal.fire({
+                                title: "ناموفق!",
+                                text: data.message,
+                                icon: "warning",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
 
-                                }).then(p => location.reload());
-                            } else {
-                                swal.fire({
-                                    title: "ناموفق!",
-                                    text: data.message,
-                                    icon: "warning",
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: "باشه"
-
-                                })
-                            }
+                            })
                         }
-                    })
+                    }
+                })
 
 
+            }
+        })
+
+    }    
+    
+    function deleteUser(e) {
+        var userId = e.target.parentElement.parentElement.children[0].innerText;
+
+        swal.fire({
+            title: 'حذف کاربر',
+            text: `آیا از حذف کردن این کاربر مطمئن هستید؟`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'بله انجام شود',
+            cancelButtonText: 'خیر'
+
+        }).then(result => {
+            if (!result.value) {
+                return;
+            }
+            else {
+
+                var toSend = {
+                    "userId": userId
                 }
-            })
 
-        }
+                $.ajax({
+                    contentType: "application/x-www-form-urlencoded",
+                    dataType: "json",
+                    type: "POST",
+                    url: "DeleteUser",
+                    data: toSend,
+                    success: data => {
+                        if (data.succeeded) {
+                            swal.fire({
+                                title: "موفق!",
+                                text: data.message,
+                                icon: "success",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
+
+                            }).then(p => location.reload());
+                        } else {
+                            swal.fire({
+                                title: "ناموفق!",
+                                text: data.message,
+                                icon: "warning",
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: "باشه"
+
+                            })
+                        }
+                    }
+                })
+
+
+            }
+        })
+
+    }
 
 
 
@@ -208,7 +275,7 @@ else if (Model.Data.RequestedSearchKey != "")
 
 
 
-    </script>
+</script>
 
 }
 

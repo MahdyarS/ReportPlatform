@@ -20,30 +20,31 @@ namespace Reports.Application.Services.UserServices.LoginService
         {
             await _signInManager.SignOutAsync();
 
-            if (request == null || String.IsNullOrEmpty(request.UserName) || String.IsNullOrEmpty(request.Password))
+            if (request == null || String.IsNullOrEmpty(request.NationalCode) || String.IsNullOrEmpty(request.Password))
                 return new ResultDto(false, "اطلاعات وارد شده معتبر نیست!");
             
-            var user = await _userManager.FindByNameAsync(request.UserName);
+            var user = _userManager.Users.SingleOrDefault(p => p.NationalCode == request.NationalCode);
 
             if (user == null)
                 return new ResultDto(false, "اطلاعات وارد شده صحیح نیست!");
 
             
 
-            var result = await _signInManager.PasswordSignInAsync(request.UserName,request.Password,true,true);
-            //_signInManager.PasswordSignInAsync(user,)
+            var result = await _signInManager.PasswordSignInAsync(user,request.Password,true,true);
 
             if (result.IsLockedOut)
                 return new ResultDto(false, "حساب کاربری شما غیر فعال می باشد!");
+
+
+            if (!result.Succeeded)
+                return new ResultDto(false, "اطلاعات وارد شده صحیح نیست!");
+
 
             if (result.RequiresTwoFactor)
             {
                 //
             }
-            //var claimId = new Claim("Id", user.Id);
-            //_userManager.AddClaimAsync(user,claimId);
 
-            //_userManager.GetClaimsAsync(user).Wait();
             return new ResultDto(true, "ورود با موفقیت انجام شد!");
         }
     }

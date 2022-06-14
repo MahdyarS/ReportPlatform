@@ -29,7 +29,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
 
             var paginationResult = 
                 _userManager.Users
-                .Where(p => p.FirstName.Contains(request.SearchKey) || p.LastName.Contains(request.SearchKey))
+                .Where(p => p.FirstName.Contains(request.SearchKey ?? "") || p.LastName.Contains(request.SearchKey))
                 .Select(p => new UserModelInAdminList
                 {
                     FName = p.FirstName,
@@ -52,7 +52,7 @@ namespace Reports.Application.Services.UserServices.GetUsersService
                     LastPageIndexToShow = paginationResult.LastPageIndexToShow,
                     NextIsDisabled = paginationResult.NextIsDisabled,
                     PrevIsDiabled = paginationResult.PrevIsDiabled,
-                    RequestedPageIndex = request.PageIndex,
+                    RequestedPageIndex = paginationResult.RequestedPageIndex,
                     PagesCount = paginationResult.PagesCount,
                     RequestedSearchKey = request.SearchKey,
                 }

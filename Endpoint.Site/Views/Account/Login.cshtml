@@ -1,4 +1,5 @@
-﻿
+﻿@model Endpoint.Site.Models.AccountControllerModels.LoginViewModel
+
 @{
     ViewData["Title"] = "Login";
 }
@@ -34,44 +35,28 @@
                 <section class="page-account-box">
                     <div class="col-lg-6 col-md-6 col-xs-12 mx-auto">
                         <div class="ds-userlogin">
-                            @*<a href="#" class="account-box-logo">digismart</a>*@
                             <div class="account-box">
-@*                                <div class="account-box-headline">
-                                    <a href="" class="login-ds active">
-                                        <span class="title">ورود</span>
-                                        <span class="sub-title">به Mystore</span>
-                                    </a>
-                                    <a href="register" class="register-ds">
-                                        <span class="title">ثبت نام</span>
-                                        <span class="sub-title">در MyStore</span>
-                                    </a>
-                                </div>
-*@                                <div class="Login-to-account mt-4">
+                                <div class="Login-to-account mt-4">
                                     <div class="account-box-content">
                                         <h4>ورود به حساب کاربری</h4>
-                                        @*<form action="#" class="form-account text-right">*@
+                                        @if(ViewBag.Error != null)
+                                        {
+                                            <div class="alert alert-danger">
+                                                @ViewBag.Error
+                                            </div>
+                                        }
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                        @*<div class="form-account-title">
-                                            <label for="email-phone">ایمیل</label>
-                                            <input asp-for="Email" type="text" class="number-email-input" id="email" name="email">
-                                            <span asp-validation-for="Email" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-account-title">
-                                            <label for="password">رمز عبور</label>
-                                            <input asp-for="Password" type="password" class="password-input" name="password" id="password">
-                                            <span asp-validation-for="Password" class="text-danger"></span>
-                                        </div>*@
                                         <form asp-controller="Account" asp-action="Login">
                                         <div class="form-account-title">
-                                            <label for="userName">ایمیل</label>
-                                            <input type="email" class="number-email-input" id="email" name="userName">
+                                            <label for="NationalCode">کدملی</label>
+                                            <input class="number-email-input" id="NationalCode" asp-for="NationalCode">
                                         </div>
                                         <div class="form-account-title">
                                             <label for="password">رمز عبور</label>
-                                            <input type="password" class="password-input" id="password" name="password">
+                                            <input type="password" class="password-input" id="password" asp-for="Password">
                                         </div>
                                         <div class="form-check form-account-title">
-                                            <input class="form-check-input mt-3 w-50" type="checkbox" name="isPersistent">
+                                            <input class="form-check-input mt-3 w-50" type="checkbox" asp-for="IsPersistent">
                                             <label class="form-check-label position-relative w-25" for="isPersistent">
                                                 مرا به خاطر بسپار
                                             </label>
@@ -80,7 +65,7 @@
                                             <a href="~/ForgotPassword">رمز عبور خود را فراموش کرده اید؟</a>
                                         </div>
                                         <div class="form-row-account">
-                                            <button type="submit" @*id="login"*@ class="btn btn-primary btn-login">ورود</button>
+                                            <button type="submit" class="btn btn-primary btn-login">ورود</button>
                                         </div>
                                         </form>
                                     </div>
@@ -120,70 +105,6 @@
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 
-
-<script>
-
- //   console.log('ssssssssssss');
-
-    document.getElementById('login').addEventListener('click', login);
-  //  $('#login').on('click', login);
-
-
-    function login() {
-
-        var email = $('#email').val();
-        var password = $('#password').val();
-        var isPersistent = $('#isPersistent').is(':checked');
-
-        console.log(isPersistent);
-
-        var postData = {
-            'userName': email,
-            'password': password,
-            'isPersistent': isPersistent
-        };
-
-        $.ajax({
-            contetType: "application/x-www-form-urlencoded",
-            dataType: 'json',
-            type: "POST",
-            url: "Login",
-            data: postData,
-            success: data => {
-                if (data.succeeded) {
-                    swal.fire({
-                        title: "موفق!",
-                        text: data.message,
-                        icon: "success",
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: "باشه"
-                    }).then(p => location.replace("/"));
-
-                } else {
-                    swal.fire({
-                        title: "ناموفق!",
-                        text: data.message,
-                        icon: "warning",
-                        confirmButtonColor: '#d33',
-                        confirmButtonText: "باشه"
-                    })
-
-                }
-            }
-        });
-
-
-
-
-    }
-
-
-
-
-
-
-
-</script>
 
 
 

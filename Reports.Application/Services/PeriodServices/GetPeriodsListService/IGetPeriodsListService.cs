@@ -27,17 +27,18 @@ namespace Reports.Application.Services.PeriodServices.GetPeriodsListService
 
         public ResultDto<GetPeriodsListResultDto> Execute(GetPeriodListRequestDto request)
         {
-            var paginationResult = _context.Periods
-                                            .Where(p => p.PeriodName.Contains(request.SearchKey) && p.UserId == request.UserId)
-                                            .Select(p => new PeriodInListDto
-                                            {
-                                                PeriodId = p.PeriodId,
-                                                PeriodName = p.PeriodName,
-                                                StartPeriodDate = p.StartPeriod.ConvertMiladiToShamsi(),
-                                                FinishPeriodDate = p.FinishPeriod.ConvertMiladiToShamsi(),
-                                                PeriodDescription = p.PeriodDescription
-                                            })
-                                            .ToPaged(request.PageIndex, request.ItemsInPageCount);
+            var query = _context.Periods.Where(p => p.PeriodName.Contains(request.SearchKey) && p.UserId == request.UserId);
+
+            var paginationResult = query.Select(p => new PeriodInListDto
+                                          {
+                                              PeriodId = p.PeriodId,
+                                              PeriodName = p.PeriodName,
+                                              StartPeriodDate = p.StartPeriod.ConvertMiladiToShamsi(),
+                                              FinishPeriodDate = p.FinishPeriod.ConvertMiladiToShamsi(),
+                                              PeriodDescription = p.PeriodDescription
+                                          }).OrderByDescending(p => p.StartPeriodDate)
+                                          .ToPaged(request.PageIndex, request.ItemsInPageCount);
+
             if (!paginationResult.Succeeded)
                 return new ResultDto<GetPeriodsListResultDto>(false, paginationResult.Message)
                 {
@@ -59,7 +60,7 @@ namespace Reports.Application.Services.PeriodServices.GetPeriodsListService
                     NextIsDisabled = paginationResult.NextIsDisabled,
                     PagesCount = paginationResult.PagesCount,
                     PrevIsDisabled = paginationResult.PrevIsDiabled,
-                    RequestedPageIndex = request.PageIndex,
+                    RequestedPageIndex = paginationResult.RequestedPageIndex,
                     RequestedSearchKey = request.SearchKey,
                     UserId = request.UserId,
                     UsersFirstName = request.UsersFirstName,

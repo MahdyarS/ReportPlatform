@@ -34,6 +34,13 @@ namespace Endpoint.Site.IOCServiceConfigurations.IdentityConfigs
                 options.Tokens.EmailConfirmationTokenProvider = "";
 
                 //...
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+
+                
 
             });
 
