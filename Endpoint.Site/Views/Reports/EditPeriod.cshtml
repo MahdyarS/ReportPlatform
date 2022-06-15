@@ -8,7 +8,7 @@
 
 
 
-@if(ViewBag.Error != null && ViewBag.Error != "")
+@if (ViewBag.Error != null && ViewBag.Error != "")
 {
     <div class="alert alert-danger">
         @ViewBag.Error
@@ -16,51 +16,74 @@
 }
 
 
-<form asp-action="EditPeriod">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <input type="hidden" asp-for="PeriodId" />
-    <span asp-validation-for="PeriodId" class="text-danger"></span>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <td>تاریخ شروع بازه</td>
-                <td>تاریخ پایان بازه</td>
-                <td>نام بازه</td>
-                <td class="col-6">توضیحات</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <input class="date form-control" type="text" asp-for="StartPeriod" />
-                    <span asp-validation-for="StartPeriod" class="text-danger"></span>
-                </td>
-                <td>
-                    <input class="date form-control" type="text" asp-for="FinishPeriod" />
-                    <span asp-validation-for="FinishPeriod" class="text-danger"></span>
-
-                </td>
-                <td>
-                    <input asp-for="PeriodName" class="form-control" />
-                    <span asp-validation-for="PeriodName" class="text-danger"></span>
-
-                </td>
-                <td class="col-6">
-                    <textarea asp-for="PeriodDescription" class="form-control" rows="8"></textarea>
-                    <span asp-validation-for="PeriodDescription" class="text-danger"></span>
-
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">ثبت تغییرات</button>
-</form>
 
 
 
 
+<div class="row justify-content-md-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-primary">
+                    <h2 class="card-title" id="basic-layout-card-center">ویرایش بازه</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <form class="form" asp-action="EditPeriod">
+                        <input type="hidden" asp-for="PeriodId" />
+                        <span asp-validation-for="PeriodId" class="text-danger"></span>
+
+
+                        <div class="form-body">
+
+                            <div class="form-group">
+                                <label for="periodName">نام بازه</label>
+                                <input id="periodName" asp-for="PeriodName" class="form-control" />
+                                <span asp-validation-for="PeriodName" class="text-danger"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="startPeriod">تاریخ شروع بازه</label>
+                                        <input id="startPeriod" asp-for="StartPeriod" class="date form-control" type="text" value="@(Model.StartPeriod)" />
+                                        <span asp-validation-for="StartPeriod" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="finishPeriod">تاریخ پایان بازه</label>
+                                        <input id="finishPeriod" asp-for="FinishPeriod" class="date form-control" type="text" value="@(Model.FinishPeriod)" />
+                                        <span asp-validation-for="FinishPeriod" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="periodDetail">توضیحات بازه</label>
+                                <textarea id="periodDetail" asp-for="PeriodDescription" class="form-control" rows="8"></textarea>
+                                <span asp-validation-for="PeriodDescription" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions center">
+                            <a asp-action="PeriodsList">
+                                <button type="button" class="btn btn-danger mr-1">
+                                    <i class="icon-trash"></i> لغو
+                                </button>
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="icon-note"></i> ثبت تغییرات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

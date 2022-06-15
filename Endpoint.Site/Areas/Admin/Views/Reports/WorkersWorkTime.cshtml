@@ -27,21 +27,21 @@
         </form>
     </div>
     <div class="col">
-                <p> </p>
+        <p> </p>
 
-            <form asp-action="WorkersWorkTime">
-                <label for="baseTime">
-                    فیلتر پایه ساعت کار:
-                </label>
-                <input name="baseWorkTime" type="number" id="baseTime" class="form-control col-2" value="@Model.Data?.BaseWorkTime" />
-                <input type="hidden" name="StartPeriod" value="@(Model.Data?.StartPeriod)" />
-                <input type="hidden" name="FinishPeriod" value="@(Model.Data?.FinishPeriod)" />
-                <input type="hidden" name="SearchKeyDate" value="@(Model.Data?.RequestedSearchKeyDate)" />
-                <input type="hidden" name="ItemsInPageCount" value="@Model.Data?.ItemsInPageCount" />
-                <button type="submit" class="btn btn-outline-warning mt-1">
-                    اعمال فیلتر
-                </button>
-            </form>
+        <form asp-action="WorkersWorkTime">
+            <label for="baseTime">
+                فیلتر پایه ساعت کار:
+            </label>
+            <input name="baseWorkTime" type="number" id="baseTime" class="form-control col-2" value="@Model.Data?.BaseWorkTime" />
+            <input type="hidden" name="StartPeriod" value="@(Model.Data?.StartPeriod)" />
+            <input type="hidden" name="FinishPeriod" value="@(Model.Data?.FinishPeriod)" />
+            <input type="hidden" name="SearchKeyDate" value="@(Model.Data?.RequestedSearchKeyDate)" />
+            <input type="hidden" name="ItemsInPageCount" value="@Model.Data?.ItemsInPageCount" />
+            <button type="submit" class="btn btn-outline-warning mt-1">
+                اعمال فیلتر
+            </button>
+        </form>
 
     </div>
 
@@ -57,33 +57,43 @@ else
 {
     <div class="alert alert-secondary">
         @Model.Message
-        @if(Model.Data.BaseWorkTime > 0)
+        @if (Model.Data.BaseWorkTime > 0)
         {
             <p>
                 نمایش نتایج برای کارکنانی که بالا تر از @Model.Data.BaseWorkTime ساعت کار کرده اند
             </p>
         }
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title" id="basic-layout-form">ساعت کار کارکنان</h4>
+                    </div>
+                </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>نام و نام خانوادگی</th>
-                <th>ساعت کار حضوری</th>
-                <th>ساعت کار غیرحضوری</th>
-                <th>ساعت کار مجموع</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Data.WorkersList)
-            {
-                <tr>
-                    <td>@item.UsersFirstName @item.UsersLastName</td>
-                    <td>@item.WorkTime</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>نام و نام خانوادگی</th>
+                            <th>ساعت کار مجموع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Data.WorkersList)
+                        {
+                            <tr>
+                                <td>@item.UsersFirstName @item.UsersLastName</td>
+                                <td>@item.WorkTime</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
 
     <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
         <ul class="pagination" dir="ltr" style="direction:ltr !important">

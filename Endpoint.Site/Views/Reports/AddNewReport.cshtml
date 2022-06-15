@@ -12,52 +12,86 @@
     </div>
 }
 
-<form asp-controller="Reports" asp-action="AddNewReport" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <td>تاریخ</td>
-                <td>ساعت شروع کار</td>
-                <td>ساعت پایان کار</td>
-                <td>غیرحضوری</td>
-                <td class="col-6">توضیحات</td>
-            </tr>
-        </thead>
-        <tbody>
 
-            <tr>
-                <td>
-                    <input type="text" id="date" asp-for="Date" class="form-control">
-                    <span asp-validation-for="Date" class="text-danger"></span>
+<div class="row justify-content-md-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-primary">
+                    <h2 class="card-title" id="basic-layout-card-center">افزودن گزارش جدید</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <form class="form" asp-action="AddNewReport">
+                        <div class="form-body">
 
-                </td>
-                <td>
-                    <input type="time" asp-for="BeginningTime" class="form-control" />
-                    <span asp-validation-for="BeginningTime" class="text-danger"></span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="date">تاریخ</label>
+                                        <input type="text" id="date" asp-for="Date" class="form-control date">
+                                        <span asp-validation-for="Date" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
 
-                </td>
-                <td>
-                    <input type="time" asp-for="FinishTime" class="form-control" />
-                    <span asp-validation-for="FinishTime" class="text-danger"></span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="startPeriod">ساعت شروع کار</label>
+                                        <input type="time" asp-for="BeginningTime" class="form-control" />
+                                        <span asp-validation-for="BeginningTime" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="finishTime">ساعت پایان کار</label>
+                                        <input type="time" id="finishTime" asp-for="FinishTime" class="form-control" />
+                                        <span asp-validation-for="FinishTime" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row">
+                                    <diV class="row col-6">
+                                        <div class="col-md-3">
+                                            <label for="IsRemote">غیر حضوری</label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input asp-for="IsRemote" />
+                                        </div>
+                                    </div>
+                                </div>
 
-                </td>
-                <td>
-                    @*<input asp-for="IsRemote" />*@
-                    <input type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
-                </td>
-                <td class="col-6">
-                    <textarea rows="8" class="col-12 form-control" asp-for="ReportsDetail"></textarea>
-                    <span asp-validation-for="ReportsDetail" class="text-danger"></span>
 
-                </td>
-            </tr>
+                            <div class="form-group mt-3">
+                                <label for="reportDetail">توضیحات گزارش</label>
+                                <textarea rows="8" id="reportDetail" class="col-12 form-control" asp-for="ReportsDetail"></textarea>
+                                <span asp-validation-for="ReportsDetail" class="text-danger"></span>
 
-        </tbody>
-    </table>
-    <button class="btn btn-primary" type="submit">ثبت گزارش</button>
-</form>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions center">
+                            <a asp-action="GetReports">
+                                <button type="button" class="btn btn-danger mr-1">
+                                    <i class="icon-trash"></i> لغو
+                                </button>
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="icon-note"></i> ذخیره
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Scripts{
 <script src="~/js/persian-date.min.js"></script>
@@ -68,7 +102,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-      $("#date").pDatepicker({
+      $(".date").pDatepicker({
           initialValue:true,
           initialValueType:'persian',
 

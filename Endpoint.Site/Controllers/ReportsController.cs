@@ -149,7 +149,8 @@ namespace Endpoint.Site.Controllers
                 BeginningTime = request.BeginningTime,
                 FinishTime = request.FinishTime,
                 ReportId = request.ReportId,
-                UserName = User.Identity.Name
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Date = request.Date,
             });
 
             if (!result.Succeeded)
