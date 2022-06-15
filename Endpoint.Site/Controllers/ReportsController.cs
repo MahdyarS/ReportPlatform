@@ -98,7 +98,6 @@ namespace Endpoint.Site.Controllers
                 return View(new ResultDto<GetUsersReportsResultDto>(false, message));
             }
 
-
             var result = _getUserReportsListService.Execute(new GetReportServiceRequestDto()
             {
                 PeriodName = request.PeriodName,

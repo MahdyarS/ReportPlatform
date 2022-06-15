@@ -27,18 +27,10 @@ namespace Reports.Application.Services.PeriodServices.GetPeriodsListService
 
         public ResultDto<GetPeriodsListResultDto> Execute(GetPeriodListRequestDto request)
         {
-            var query = _context.Periods.Where(p => p.PeriodName.Contains(request.SearchKey) && p.UserId == request.UserId);
+            var query = _context.Periods.Where(p => p.PeriodName.Contains(request.SearchKey) && p.UserId == request.UserId).OrderByDescending(p => p.PeriodId);
 
-            var paginationResult = query.Select(p => new PeriodInListDto
-                                          {
-                                              PeriodId = p.PeriodId,
-                                              PeriodName = p.PeriodName,
-                                              StartPeriodDate = p.StartPeriod.ConvertMiladiToShamsi(),
-                                              FinishPeriodDate = p.FinishPeriod.ConvertMiladiToShamsi(),
-                                              PeriodDescription = p.PeriodDescription
-                                          }).OrderByDescending(p => p.StartPeriodDate)
-                                          .ToPaged(request.PageIndex, request.ItemsInPageCount);
-
+            var paginationResult = query.ToPaged(request.PageIndex, request.ItemsInPageCount);
+                                          
             if (!paginationResult.Succeeded)
                 return new ResultDto<GetPeriodsListResultDto>(false, paginationResult.Message)
                 {
@@ -54,7 +46,14 @@ namespace Reports.Application.Services.PeriodServices.GetPeriodsListService
             {
                 Data = new GetPeriodsListResultDto
                 {
-                    PeriodsList = paginationResult.RequestedPageList,
+                    PeriodsList = paginationResult.RequestedPageList.Select(p => new PeriodInListDto
+                    {
+                        PeriodId = p.PeriodId,
+                        PeriodName = p.PeriodName,
+                        StartPeriodDate = p.StartPeriod.ConvertMiladiToShamsi(),
+                        FinishPeriodDate = p.FinishPeriod.ConvertMiladiToShamsi(),
+                        PeriodDescription = p.PeriodDescription
+                    }).OrderByDescending(p => p.StartPeriodDate).ToList(),
                     FirstPageIndexToShow = paginationResult.FirstPageIndexToShow,
                     LastPageIndexToShow = paginationResult.LastPageIndexToShow,
                     NextIsDisabled = paginationResult.NextIsDisabled,

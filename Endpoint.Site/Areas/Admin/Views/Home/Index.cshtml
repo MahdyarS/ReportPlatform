@@ -1,7 +1,224 @@
-﻿
+﻿@model Reports.Application.Services.MutitaskServices.AdminPanelHomePageService.AdminPanelHomePageViewModel
+
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title" id="basic-layout-form">دسترسی های سریع به لیست کاربران از طریق المان پایین امکان پذیر است <i class="fas fa-arrow-down"></i></h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <a asp-controller="Users" asp-action="UsersList">
+                        <button class="btn col-12 btn-lg btn-outline-success">
+                            لیست کاربران <i class="fas fa-list"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title" id="basic-layout-form">دسترسی های سریع به صفحه گزارش های روزانه از طریق المان پایین امکان پذیر است <i class="fas fa-arrow-down"></i></h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="px-3">
+                    <a asp-controller="Reports" asp-action="GetReportsOfEachDay">
+                        <button class="btn col-12 btn-lg btn-outline-primary">
+                            گزارش های روزانه <i class="icon-note"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">نمودار فعالیت های اخیر من</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block chartjs">
+                        <iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; inset: 0px;"></iframe>
+                        <canvas id="line-chart" height="400" width="724" style="display: block; width: 724px; height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">آخرین گزارش های ثبت شده</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <th>تاریخ</th>
+                            <th>نام و نام خانوادگی</th>
+                            <th>ساعت کار</th>
+                            <th>متن گزارش</th>
+                        </thead>
+                        <tbody>
+                    @foreach(var item in Model.LastReportsList)
+                    {
+                        <tr>
+                            <td>@item.Date</td>
+                            <td>@item.UsersFirstName @item.UsersLastName</td>
+                            <td>@item.WorkTime</td>
+                            <td>@item.ReportsDetail</td>
+
+                        </tr>
+                    }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+@section Scripts{
+
+    <script>
+
+
+    (function(window, document, $) {
+
+
+
+            $(window).on("load", function () {
+
+            var Dates = @Html.Raw(Json.Serialize(Model.ChartData.Dates));
+            var WorkHours = @Html.Raw(Json.Serialize(Model.ChartData.WorkTimes));
+
+            //Get the context of the Chart canvas element we want to select
+            var ctx = $("#line-chart");
+
+            // Chart Options
+            var chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom',
+                },
+                hover: {
+                    mode: 'label'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        gridLines: {
+                            color: "#f3f3f3",
+                            drawTicks: false,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'تاریخ'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        gridLines: {
+                            color: "#f3f3f3",
+                            drawTicks: false,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'مجموع ساعت کار من در هر روز'
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: ''
+                }
+            };
+
+            // Chart Data
+            var chartData = {
+                labels: Dates/*["تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی"]*/,
+                datasets: [{
+                    label: "مجموع ساعت کار",
+                    data: WorkHours/*[150, 59, 80, 81, 56, 55, 40]*/,
+                    fill: false,
+                    // borderDash: [5, 5],
+                    borderColor: "#666ee8",
+                    pointBorderColor: "#666ee8",
+                    pointBackgroundColor: "#FFF",
+                    pointBorderWidth: 2,
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 4,
+                }]
+            };
+
+            var config = {
+                type: 'line',
+
+                // Chart Options
+                options: chartOptions,
+
+                data: chartData
+            };
+
+            // Create the chart
+            var lineChart = new Chart(ctx, config);
+
+
+
+            ////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        });
+
+
+
+
+    })(window, document, jQuery);    </script>
+
+
+
+<script src="~/js/persian-date.min.js"></script>
+
+
+<script src="~/js/persian-datepicker.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+      $(".date").pDatepicker({
+          initialValue:true,
+          initialValueType:'persian',
+
+          calendar:{
+        persian: {
+            locale: 'en'
+        }
+    },
+          format:'L',
+      });
+    });
+</script>
+
+}

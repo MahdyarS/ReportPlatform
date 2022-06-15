@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Reports.Application.Services.MutitaskServices.AdminPanelHomePageService;
 
 namespace Endpoint.Site.Areas.Admin.Controllers
 {
@@ -7,9 +8,16 @@ namespace Endpoint.Site.Areas.Admin.Controllers
     [Area("Admin")]
     public class HomeController : Controller
     {
+        private readonly IAdminPanelHomePageService _adminPanelHomePageService;
+
+        public HomeController(IAdminPanelHomePageService adminPanelHomePageService)
+        {
+            _adminPanelHomePageService = adminPanelHomePageService;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            return View(_adminPanelHomePageService.Execute());
         }
     }
 }

@@ -61,6 +61,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
             reportFiltersList.Add(new PeriodFilter(dateValidationResult.StartPeriod, dateValidationResult.FinishPeriod));
             reportFiltersList.Add(new SpecificDateFilter(dateValidationResult.SearchKeyDate));
             reportFiltersList.Add(new RemoteOrNoneRemoteFilter(request.HasRemoteReports, request.HasNoneRemoteReports));
+            reportFiltersList.Add(new UserIdFilter(request.UserId));
 
             var query = _context.Reports.ApplyFilters(reportFiltersList).OrderByDescending(p => p.Date);
 
@@ -162,6 +163,21 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                 return source.Where(p => p.IsRemote == false);
             if(HasRemoteReports && !HasNoneRemoteReports)
                 return source.Where(p => p.IsRemote);
+            return source;
+        }
+    }
+    public class UserIdFilter : IFilterService<Report>
+    {
+        public string UserId { get; set; }
+        public UserIdFilter(string userId)
+        {
+            UserId = userId;
+        }
+
+        public IEnumerable<Report> Execute(IEnumerable<Report> source)
+        {
+            if (!String.IsNullOrEmpty(this.UserId))
+                return source.Where(p => p.UserId == this.UserId);
             return source;
         }
     }
