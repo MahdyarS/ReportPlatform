@@ -7,7 +7,7 @@
 <h1>بازه ها</h1>
 
 
-<div class="p-3 col-12 bg-light shadow-lg mt-3 mb-5" dir="ltr">
+<div class="p-3 col-12 bg-light shadow-lg mt-3 mb-3" dir="ltr">
     <form action="PeriodsList" method="post">
         <div class="input-group" dir="ltr">
             <input id="key" name="searchkey" type="text" class="form-control" placeholder="نام بازه یا قسمتی از آن را وارد کنید:">
@@ -26,57 +26,75 @@
 }
 else
 {
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">لیست بازه ها</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block">
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-success">
+                                @TempData["Message"]
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(Model.Data.RequestedSearchKey))
+                        {
+                            <div class="alert alert-secondary">
+                                نتایج جستجو برای "@Model.Data.RequestedSearchKey":
+                            </div>
+                        }
+
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <td>نام بازه</td>
+                                    <td>شروع بازه</td>
+                                    <td>پایان بازه</td>
+                                    <td class="col-6">توضیحات</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Data.PeriodsList)
+                                {
+                                    <tr>
+                                        <td class="d-none">@item.PeriodId</td>
+                                        <td>@item.PeriodName</td>
+                                        <td>@item.StartPeriodDate</td>
+                                        <td>@item.FinishPeriodDate</td>
+                                        <td class="col-6">@item.PeriodDescription</td>
+                                        <td>
+                                            <a asp-action="GetReports" asp-route-StartPeriod="@item.StartPeriodDate" asp-route-FinishPeriod="@item.FinishPeriodDate" asp-route-PeriodName="@item.PeriodName">
+                                                <button class="btn btn-sm btn-primary">مشاهده بازه</button>
+                                            </a>
+                                            <a asp-action="EditPeriod" asp-route-PeriodId="@item.PeriodId">
+                                                <button class="btn btn-sm btn-warning">ویرایش</button>
+                                            </a>
+                                            <button class="btn btn-sm btn-danger delete">حذف</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">
             @ViewBag.Error
         </div>
     }
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Message"]
-        </div>
-    }
-    @if (!String.IsNullOrEmpty(Model.Data.RequestedSearchKey))
-    {
-        <div class="alert alert-secondary">
-            نتایج جستجو برای "@Model.Data.RequestedSearchKey":
-        </div>
-    }
-
-    <table class="table">
-        <thead>
-            <tr>
-                <td>نام بازه</td>
-                <td>شروع بازه</td>
-                <td>پایان بازه</td>
-                <td class="col-6">توضیحات</td>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Data.PeriodsList)
-            {
-                <tr>
-                    <td class="d-none">@item.PeriodId</td>
-                    <td>@item.PeriodName</td>
-                    <td>@item.StartPeriodDate</td>
-                    <td>@item.FinishPeriodDate</td>
-                    <td class="col-6">@item.PeriodDescription</td>
-                    <td>
-                        <a asp-action="GetReports" asp-route-StartPeriod="@item.StartPeriodDate" asp-route-FinishPeriod="@item.FinishPeriodDate" asp-route-PeriodName="@item.PeriodName">
-                            <button class="btn btn-sm btn-primary">مشاهده بازه</button>
-                        </a>
-                        <a asp-action="EditPeriod" asp-route-PeriodId="@item.PeriodId">
-                            <button class="btn btn-sm btn-warning">ویرایش</button>
-                        </a>
-                        <button class="btn btn-sm btn-danger delete">حذف</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
     <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
         <ul class="pagination" dir="ltr" style="direction:ltr !important">

@@ -11,9 +11,9 @@
     نمایش نمودار ساعت کار
     <form asp-action="AllWorkersWorkTimeChart">
         <label>از تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="StartDate" value="@(Model.Data?.StartDate ?? "")" />
+        <input class="date form-control col-sm-12 col-md-2" type="text" name="StartDate" value="@(Model.Data?.StartDate ?? "")" />
         <label>تا تاریخ:</label>
-        <input class="date form-control col-2" type="text" name="FinishDate" value="@(Model.Data?.FinishDate ?? "")" />
+        <input class="date form-control col-sm-12 col-md-2" type="text" name="FinishDate" value="@(Model.Data?.FinishDate ?? "")" />
         <input type="hidden" name="UsersFirstName" />
         <input type="hidden" name="UsersLastName" />
         <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>

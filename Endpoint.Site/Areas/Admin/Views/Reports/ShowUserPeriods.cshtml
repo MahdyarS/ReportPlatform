@@ -31,13 +31,25 @@
 }
 else
 {
+
+        <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">لیست بازه ها</h4>
+                    </div>
+                </div>
+                <div class="card-body">
     @if(Model.Data.RequestedSearchKey != "")
     {
         <div class="alert alert-secondary">
             نتایج جستجو برای "@Model.Data.RequestedSearchKey":
         </div>
     }
-    <table class="table">
+
+
+    <table class="table table-responsive">
         <thead>
             <tr>
                 <td>نام بازه</td>
@@ -61,8 +73,8 @@ else
                         asp-route-UserId="@Model.Data.UserId" 
                         asp-route-UsersFirstName="@Model.Data.UsersFirstName"
                         asp-route-UsersLastName="@Model.Data.UsersLastName" 
-                        asp-route-SearchKeyStartPreriodDate="@item.StartPeriodDate" 
-                        asp-route-SearchKeyFinishPreriodDate="@item.FinishPeriodDate" 
+                        asp-route-StartPeriod="@item.StartPeriodDate" 
+                        asp-route-FinishPeriod="@item.FinishPeriodDate" 
                         asp-route-PeriodName="@item.PeriodName">
                             <button class="btn btn-sm btn-primary">مشاهده بازه</button>
                         </a>
@@ -71,6 +83,13 @@ else
             }
         </tbody>
     </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
         <ul class="pagination" dir="ltr" style="direction:ltr !important">

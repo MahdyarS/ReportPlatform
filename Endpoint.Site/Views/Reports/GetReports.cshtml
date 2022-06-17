@@ -20,54 +20,74 @@
 }
 
 <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title">فیلتر ها</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-block">
 
-    <form class="col-4" asp-action="GetReports">
-        جستجوی گزارش ها در بازه:
-        <br />
-        <label>از تاریخ:</label>
-        <input class="date form-control col-4" type="text" name="startPeriod" value="@(Model.Data?.StartPeriod)" />
-        <label>تا تاریخ:</label>
-        <input class="date form-control col-4" type="text" name="finishPeriod" value="@(Model.Data?.FinishPeriod)" />
-        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data?.HasNoneRemoteReports.ToString()" />
-        <input type="hidden" name="hasRemoteReports" value="@Model.Data?.HasRemoteReports.ToString()" />
-        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
-    </form>
+                <div class="row">
+
+                    <form class="col-md-4" asp-action="GetReports">
+                        جستجوی گزارش ها در بازه:
+                        <br />
+                        <label>از تاریخ:</label>
+                        <input class="date form-control col-md-4" type="text" name="startPeriod" value="@(Model.Data?.StartPeriod)" />
+                        <label>تا تاریخ:</label>
+                        <input class="date form-control col-md-4" type="text" name="finishPeriod" value="@(Model.Data?.FinishPeriod)" />
+                        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data?.HasNoneRemoteReports.ToString()" />
+                        <input type="hidden" name="hasRemoteReports" value="@Model.Data?.HasRemoteReports.ToString()" />
+                        <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+                    </form>
 
 
-    <form class="col-4" asp-action="GetReports">
-        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
-        <input type="text" class="date form-control col-4" id="date" name="searchKeydate" value="@(Model.Data?.SearchKeyDate)" />
-        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data?.HasNoneRemoteReports.ToString()" />
-        <input type="hidden" name="hasRemoteReports" value="@Model.Data?.HasRemoteReports.ToString()" />
-        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
-    </form>
+                    <form class="col-md-4" asp-action="GetReports">
+                        <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+                        <input type="text" class="date form-control col-md-4" id="date" name="searchKeydate" value="@(Model.Data?.SearchKeyDate)" />
+                        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data?.HasNoneRemoteReports.ToString()" />
+                        <input type="hidden" name="hasRemoteReports" value="@Model.Data?.HasRemoteReports.ToString()" />
+                        <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+                    </form>
 
-    <form class="col" asp-action="GetReports">
-        <div>
-            فیلتر کردن گزارش ها بر اساس حضوری/غیرحضوری:
+                    <form class="col-md-4" asp-action="GetReports">
+                        <div>
+                            فیلتر کردن گزارش ها بر اساس حضوری/غیرحضوری:
+                        </div>
+                        <div class="form-check mt-3">
+
+                            <input name="" class="form-check-input" type="checkbox" id="hasNoneRemote">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                نمایش گزارش های حضوری
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input name="" class="form-check-input" type="checkbox" id="hasRemote">
+                            <label class="form-check-label" for="flexCheckChecked">
+                                نمایش گزارش های غیر حضوری
+                            </label>
+                            <input name="hasNoneRemoteReports" id="hasNoneRemoteValue" type="hidden" />
+                            <input name="hasRemoteReports" id="hasRemoteValue" type="hidden" />
+                            <input name="searchKeydate" type="hidden" value="@Model.Data?.SearchKeyDate" />
+                            <input name="startPeriod" type="hidden" value="@Model.Data?.StartPeriod" />
+                            <input name="finishPeriod" type="hidden" value="@Model.Data?.FinishPeriod" />
+                            <input name="periodName" type="hidden" value="@Model.Data?.PeriodName" />
+                        </div>
+                        <button class="btn btn-outline-secondary mt-2" type="submit">اعمال فیلتر</button>
+                    </form>
+                </div>
+                </div>
+
+            </div>
         </div>
-        <div class="form-check mt-3">
-
-            <input name="" class="form-check-input" type="checkbox" id="hasNoneRemote" >
-            <label class="form-check-label" for="flexCheckDefault">
-                نمایش گزارش های حضوری
-            </label>
-        </div>
-        <div class="form-check">
-            <input name="" class="form-check-input" type="checkbox" id="hasRemote" >
-            <label class="form-check-label" for="flexCheckChecked">
-                نمایش گزارش های غیر حضوری
-            </label>
-            <input name="hasNoneRemoteReports" id="hasNoneRemoteValue" type="hidden" />
-            <input name="hasRemoteReports" id="hasRemoteValue" type="hidden" />
-            <input name="searchKeydate" type="hidden" value="@Model.Data?.SearchKeyDate" />
-            <input name="startPeriod" type="hidden" value="@Model.Data?.StartPeriod" />
-            <input name="finishPeriod" type="hidden" value="@Model.Data?.FinishPeriod" />
-            <input name="periodName" type="hidden" value="@Model.Data?.PeriodName" />
-        </div>
-        <button class="btn btn-outline-secondary mt-2" type="submit">اعمال فیلتر</button>
-    </form>
+    </div>
 </div>
+
+
+
 
 
 @if (!Model.Succeeded)
@@ -78,78 +98,99 @@
 }
 else
 {
-    @if (Model.Data.SpecificDateisSearched)
-    {
-        <div class="alert alert-secondary">
-            نمایش گزارش ها در تاریخ: @Model.Data.SearchKeyDate
-        </div>
-    }
-    else if (Model.Data.PeriodIsSearched)
-    {
-        <div class="alert alert-secondary">
-            <div class="row justify-content-between">
-                <span>
-                    @if (!String.IsNullOrEmpty(Model.Data.PeriodName))
-                    {
-                        <h3>بازه @Model.Data.PeriodName:</h3>
-                    }
-                    نمایش گزارش ها از تاریخ @Model.Data.StartPeriod تا تاریخ @Model.Data.FinishPeriod .
-                    شما در این بازه در مجموع @Model.Data.TotalHoursWorkedInPeriod ساعت کار کرده اید
-                    @if (Model.Data.PeriodName == "")
-                    {
-                        <a asp-action="AddPeriod" asp-route-start="@Model.Data.StartPeriod" asp-route-finish="@Model.Data.FinishPeriod">
-                            <button class="btn btn-sm btn-primary mt-2" type="button">ذخیره کردن بازه</button>
-                        </a>
 
-                    }
-                </span>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">لیست گزارش ها</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block">
 
+
+                        @if (Model.Data.SpecificDateisSearched)
+                        {
+                            <div class="alert alert-secondary p-2">
+                                نمایش گزارش ها در تاریخ: @Model.Data.SearchKeyDate
+                            </div>
+                        }
+                        else if (Model.Data.PeriodIsSearched)
+                        {
+                            <div class="alert alert-secondary">
+                                <div class="row justify-content-between">
+                                    <span>
+                                        @if (!String.IsNullOrEmpty(Model.Data.PeriodName))
+                                        {
+                                            <h3>بازه @Model.Data.PeriodName:</h3>
+                                        }
+                                        نمایش گزارش ها از تاریخ @Model.Data.StartPeriod تا تاریخ @Model.Data.FinishPeriod .
+                                        شما در این بازه در مجموع @Model.Data.TotalHoursWorkedInPeriod ساعت کار کرده اید
+                                        @if (Model.Data.PeriodName == "")
+                                        {
+                                            <a asp-action="AddPeriod" asp-route-start="@Model.Data.StartPeriod" asp-route-finish="@Model.Data.FinishPeriod">
+                                                <button class="btn btn-sm btn-primary mt-2" type="button">ذخیره کردن بازه</button>
+                                            </a>
+
+                                        }
+                                    </span>
+
+                                </div>
+                            </div>
+                        }
+
+                        <table class="table table-responsive">
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">تاریخ</th>
+                                    <th scope="col">ساعت شروع کار</th>
+                                    <th scope="col">ساعت پایان کار</th>
+                                    <th scope="col">مجموع ساعت کار</th>
+                                    <th scope="col">حضوری/غیرحضوری</th>
+                                    <th scope="col" class="col-6">جزئیات گزارش</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+
+                                @foreach (var item in Model.Data.ReportsList)
+                                {
+                                    <tr>
+                                        <td class="d-none">@item.ReportId</td>
+                                        <td>@item.Date</td>
+                                        <td>@item.StartWorkTime</td>
+                                        <td>@item.FinishWorkTime</td>
+                                        <td>@item.WorkTime</td>
+                                        <td>@item.IsRemote</td>
+                                        <td class="col-6">@item.ReportsDetail</td>
+                                        <td>
+                                            <a asp-action="EditReport" asp-route-ReportId="@item.ReportId">
+                                                <button class="btn btn-warning">ویرایش</button>
+                                            </a>
+                                            <button class="btn btn-danger DeleteReport">حذف</button>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
             </div>
         </div>
-    }
-
-    <table class="table">
-
-        <thead>
-            <tr>
-                <th scope="col">تاریخ</th>
-                <th scope="col">ساعت شروع کار</th>
-                <th scope="col">ساعت پایان کار</th>
-                <th scope="col">مجموع ساعت کار</th>
-                <th scope="col">حضوری/غیرحضوری</th>
-                <th scope="col" class="col-6">جزئیات گزارش</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-
-            @foreach (var item in Model.Data.ReportsList)
-            {
-                <tr>
-                    <td class="d-none">@item.ReportId</td>
-                    <td>@item.Date</td>
-                    <td>@item.StartWorkTime</td>
-                    <td>@item.FinishWorkTime</td>
-                    <td>@item.WorkTime</td>
-                    <td>@item.IsRemote</td>
-                    <td class="col-6">@item.ReportsDetail</td>
-                    <td>
-                        <a asp-action="EditReport" asp-route-ReportId="@item.ReportId">
-                            <button class="btn btn-warning">ویرایش</button>
-                        </a>
-                        <button class="btn btn-danger DeleteReport">حذف</button>
-                    </td>
-                </tr>
-            }
-
-        </tbody>
-    </table>
+    </div>
 
 
 
 
 
-    <nav aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
+
+
+    <nav class="p-2" aria-label="Page navigation example" dir="ltr" style="direction:ltr !important">
         <ul class="pagination" dir="ltr" style="direction:ltr !important">
 
             <li class="page-item">
@@ -283,37 +324,37 @@ else
 
 <script>
 
-      var hasRemote = @(Json.Serialize(Model.Data?.HasRemoteReports ?? true));
-      var hasNoneRemote = @(Json.Serialize(Model.Data?.HasNoneRemoteReports ?? true));
+    var hasRemote = @(Json.Serialize(Model.Data?.HasRemoteReports ?? true));
+    var hasNoneRemote = @(Json.Serialize(Model.Data?.HasNoneRemoteReports ?? true));
 
-      $(document).ready(function(){
-              $('#hasRemote').prop('checked',hasRemote);
-              $('#hasNoneRemote').prop('checked',hasNoneRemote);
+    $(document).ready(function(){
+            $('#hasRemote').prop('checked',hasRemote);
+            $('#hasNoneRemote').prop('checked',hasNoneRemote);
 
-              $('#hasRemoteValue').prop('value',hasRemote? 'True':'False');
-              $('#hasNoneRemoteValue').prop('value',hasNoneRemote? 'True':'False');
-      })
+            $('#hasRemoteValue').prop('value',hasRemote? 'True':'False');
+            $('#hasNoneRemoteValue').prop('value',hasNoneRemote? 'True':'False');
+    })
 
-      $('#hasRemote').on('change',function(){
+    $('#hasRemote').on('change',function(){
 
-          if ($('#hasRemote').is(':checked')) {
-              $('#hasRemoteValue').attr('value', 'True');
-            } else {
-              $('#hasRemoteValue').attr('value', 'False');
-            }
-
-
-      })
-      $('#hasNoneRemote').on('change',function(){
-
-          if ($('#hasNoneRemote').is(':checked')) {
-              $('#hasNoneRemoteValue').attr('value', 'True');
-            } else {
-              $('#hasNoneRemoteValue').attr('value', 'False');
-            }
+        if ($('#hasRemote').is(':checked')) {
+            $('#hasRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasRemoteValue').attr('value', 'False');
+          }
 
 
-      })
+    })
+    $('#hasNoneRemote').on('change',function(){
+
+        if ($('#hasNoneRemote').is(':checked')) {
+            $('#hasNoneRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasNoneRemoteValue').attr('value', 'False');
+          }
+
+
+    })
 
 </script>
 

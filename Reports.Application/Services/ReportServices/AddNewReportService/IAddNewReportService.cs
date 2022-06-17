@@ -47,12 +47,7 @@ namespace Reports.Application.Services.ReportServices.AddNewReportService
 
             var user = await _userManager.FindByNameAsync(request.UserName);
 
-            /*
-            Report already = _context.Reports.Where(p => p.UserId == user.Id && p.Date == date).SingleOrDefault();
 
-            if (already != null)
-                return new ResultDto(false, "شما گزارش کار این تاریخ را نوشته اید!");
-            */
 
             var report = new Report
             {

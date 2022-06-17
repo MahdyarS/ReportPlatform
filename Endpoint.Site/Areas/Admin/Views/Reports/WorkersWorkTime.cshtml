@@ -6,46 +6,63 @@
 
 <h1>آمار ساعت کاری مجموع کارکنان</h1>
 
+
 <div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title">فیلترها</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-block">
+                    <div class="row">
 
-    <div class="col-4">
-        جستجوی گزارش ها در بازه:
-        <form asp-action="WorkersWorkTime">
-            <label>از تاریخ:</label>
-            <input class="date form-control col-4" type="text" name="startPeriod" value="@(Model.Data?.StartPeriod)" />
-            <label>تا تاریخ:</label>
-            <input class="date form-control col-4" type="text" name="finishPeriod" value="@(Model.Data?.FinishPeriod)" />
-            <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
-        </form>
+                        <div class="col-md-4">
+                            جستجوی گزارش ها در بازه:
+                            <form asp-action="WorkersWorkTime">
+                                <label>از تاریخ:</label>
+                                <input class="date form-control col-md-4" type="text" name="startPeriod" value="@(Model.Data?.StartPeriod)" />
+                                <label>تا تاریخ:</label>
+                                <input class="date form-control col-md-4" type="text" name="finishPeriod" value="@(Model.Data?.FinishPeriod)" />
+                                <button class="btn btn-outline-success mt-2" type="submit">جستجو</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <p> </p>
+                            <form asp-action="WorkersWorkTime">
+                                <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
+                                <input type="text" class="date form-control col-md-4" id="date" name="searchKeydate" value="@(Model.Data?.RequestedSearchKeyDate)" />
+                                <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <p> </p>
+
+                            <form asp-action="WorkersWorkTime">
+                                <label for="baseTime">
+                                    فیلتر پایه ساعت کار:
+                                </label>
+                                <input name="baseWorkTime" type="number" id="baseTime" class="form-control col-4 col-md-2" value="@Model.Data?.BaseWorkTime" />
+                                <input type="hidden" name="StartPeriod" value="@(Model.Data?.StartPeriod)" />
+                                <input type="hidden" name="FinishPeriod" value="@(Model.Data?.FinishPeriod)" />
+                                <input type="hidden" name="SearchKeyDate" value="@(Model.Data?.RequestedSearchKeyDate)" />
+                                <input type="hidden" name="ItemsInPageCount" value="@Model.Data?.ItemsInPageCount" />
+                                <button type="submit" class="btn btn-outline-warning mt-1">
+                                    اعمال فیلتر
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-4">
-        <p> </p>
-        <form asp-action="WorkersWorkTime">
-            <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
-            <input type="text" class="date form-control col-4" id="date" name="searchKeydate" value="@(Model.Data?.RequestedSearchKeyDate)" />
-            <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
-        </form>
-    </div>
-    <div class="col">
-        <p> </p>
-
-        <form asp-action="WorkersWorkTime">
-            <label for="baseTime">
-                فیلتر پایه ساعت کار:
-            </label>
-            <input name="baseWorkTime" type="number" id="baseTime" class="form-control col-2" value="@Model.Data?.BaseWorkTime" />
-            <input type="hidden" name="StartPeriod" value="@(Model.Data?.StartPeriod)" />
-            <input type="hidden" name="FinishPeriod" value="@(Model.Data?.FinishPeriod)" />
-            <input type="hidden" name="SearchKeyDate" value="@(Model.Data?.RequestedSearchKeyDate)" />
-            <input type="hidden" name="ItemsInPageCount" value="@Model.Data?.ItemsInPageCount" />
-            <button type="submit" class="btn btn-outline-warning mt-1">
-                اعمال فیلتر
-            </button>
-        </form>
-
-    </div>
-
 </div>
+
 
 @if (!Model.Succeeded)
 {
@@ -55,28 +72,30 @@
 }
 else
 {
-    <div class="alert alert-secondary">
-        @Model.Message
-        @if (Model.Data.BaseWorkTime > 0)
-        {
-            <p>
-                نمایش نتایج برای کارکنانی که بالا تر از @Model.Data.BaseWorkTime ساعت کار کرده اند
-            </p>
-        }
-    </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title-wrap bar-success">
                         <h4 class="card-title" id="basic-layout-form">ساعت کار کارکنان</h4>
                     </div>
                 </div>
+                <div class="alert alert-secondary">
+                    @Model.Message
+                    @if (Model.Data.BaseWorkTime > 0)
+                    {
+                        <p>
+                            نمایش نتایج برای کارکنانی که بالا تر از @Model.Data.BaseWorkTime ساعت کار کرده اند
+                        </p>
+                    }
+                </div>
 
-                <table class="table table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>نام و نام خانوادگی</th>
+                            <th>ساعت کار حضوری</th>
+                            <th>ساعت کار غیرحضوری</th>
                             <th>ساعت کار مجموع</th>
                         </tr>
                     </thead>
@@ -85,6 +104,8 @@ else
                         {
                             <tr>
                                 <td>@item.UsersFirstName @item.UsersLastName</td>
+                                <td>@item.NoneRemoteWorkTime</td>
+                                <td>@item.RemoteWorkTime</td>
                                 <td>@item.WorkTime</td>
                             </tr>
                         }

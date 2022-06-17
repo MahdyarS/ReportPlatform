@@ -97,22 +97,42 @@ namespace Reports.Application.Services.ReportServices.GetWorkersTotalWorkTimeLis
             foreach (var item in groupedResult)
             {
                 double totalMinutes = 0;
+                double totalRemoteTimeMinutes = 0;
+                double totalNoneRemoteTimeMinutes = 0;
                 foreach (var workTimeSample in item)
                 {
                     totalMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
+
+                    if(workTimeSample.IsRemote)
+                        totalRemoteTimeMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
+                    else
+                        totalNoneRemoteTimeMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
                 }
                 int totalHours = (int)totalMinutes / 60;
+                int totalRemoteHours = (int)totalRemoteTimeMinutes / 60;
+                int totalNoneRemoteHours = (int)totalNoneRemoteTimeMinutes / 60;
+
                 int Minutes = (int)totalMinutes % 60;
-                string minutesString = Minutes < 10? "0" + Minutes.ToString() : Minutes.ToString();
-                string hoursString = totalHours < 10? "0" + totalHours.ToString() : totalHours.ToString();
-                
+                string minutesString = Minutes < 10 ? "0" + Minutes.ToString() : Minutes.ToString();
+                string hoursString = totalHours < 10 ? "0" + totalHours.ToString() : totalHours.ToString();
+
+                int remoteMinutes = (int)totalRemoteTimeMinutes % 60;
+                string remoteMinutesString = remoteMinutes < 10 ? "0" + remoteMinutes.ToString() : remoteMinutes.ToString();
+                string remoteHoursString = totalRemoteHours < 10 ? "0" + totalRemoteHours.ToString() : totalRemoteHours.ToString();
+
+                int noneRemoteMinutes = (int)totalNoneRemoteTimeMinutes % 60;
+                string noneRemoteMinutesString = noneRemoteMinutes < 10 ? "0" + noneRemoteMinutes.ToString() : noneRemoteMinutes.ToString();
+                string noneRemoteHoursString = totalNoneRemoteHours < 10 ? "0" + totalNoneRemoteHours.ToString() : totalNoneRemoteHours.ToString();
+
                 workersList.Add(new WorkerToShowInListDto()
                 {
                     UserId = item.Key,
                     UsersFirstName = item.FirstOrDefault()?.UsersFirstName,
                     UsersLastName = item.FirstOrDefault()?.UsersLastName,
                     WorkHour = totalHours,
-                    WorkTime = hoursString + ":" + minutesString
+                    WorkTime = hoursString + ":" + minutesString,
+                    RemoteWorkTime = remoteHoursString + ":" + remoteMinutesString,
+                    NoneRemoteWorkTime = noneRemoteHoursString + ":" + noneRemoteMinutesString
                 });
             }
 
@@ -245,8 +265,8 @@ namespace Reports.Application.Services.ReportServices.GetWorkersTotalWorkTimeLis
         public string UsersLastName { get; set; }
         public string UserId { get; set; }
         public string WorkTime { get; set; }
-        public string NoneRemoteWorkTime { get; set; }
         public string RemoteWorkTime { get; set; }
+        public string NoneRemoteWorkTime { get; set; }
         public int WorkHour { get; set; }
     }
 

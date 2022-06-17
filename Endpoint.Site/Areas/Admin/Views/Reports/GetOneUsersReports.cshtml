@@ -39,15 +39,26 @@ else
         </form>
         </div>
     *@
+        <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">فیلترها</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block">
+
     <div class="row">
 
-        <form class="col-4" asp-action="GetOneUsersReports">
+        <form class="col-md-4" asp-action="GetOneUsersReports">
             جستجوی گزارش ها در بازه:
             <br />
             <label>از تاریخ:</label>
-            <input class="date form-control col-4" type="text" name="startPeriod" value="@(Model.Data.StartPeriod)" />
+            <input class="date form-control col-md-4" type="text" name="startPeriod" value="@(Model.Data.StartPeriod)" />
             <label>تا تاریخ:</label>
-            <input class="date form-control col-4" type="text" name="finishPeriod" value="@(Model.Data.FinishPeriod)" />
+            <input class="date form-control col-md-4" type="text" name="finishPeriod" value="@(Model.Data.FinishPeriod)" />
             <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
             <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
             <input type="hidden" name="UserId" value="@Model.Data.UserId" />
@@ -57,9 +68,9 @@ else
         </form>
 
 
-        <form class="col-4" asp-action="GetOneUsersReports">
+        <form class="col-md-4" asp-action="GetOneUsersReports">
             <label class="date" for="date">جستجوی تاریخ مورد نظر:</label>
-            <input type="text" class="date form-control col-4" id="date" name="searchKeydate" value="@(Model.Data.SearchKeyDate)" />
+            <input type="text" class="date form-control col-md-4" id="date" name="searchKeydate" value="@(Model.Data.SearchKeyDate)" />
             <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
             <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
             <input type="hidden" name="UserId" value="@Model.Data.UserId" />
@@ -68,7 +79,7 @@ else
             <button class="btn btn-outline-primary mt-2" type="submit">جستجو</button>
         </form>
 
-        <form class="col" asp-action="GetOneUsersReports">
+        <form class="col-md-4" asp-action="GetOneUsersReports">
             <div>
                 فیلتر کردن گزارش ها بر اساس حضوری/غیرحضوری:
             </div>
@@ -97,6 +108,15 @@ else
         </form>
     </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 
     @if (!Model.Succeeded)
@@ -107,6 +127,17 @@ else
     }
     else
     {
+
+            <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title">نمودار</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block">
         @if (Model.Data.SpecificDateisSearched)
         {
             <div class="alert alert-secondary">
@@ -127,7 +158,7 @@ else
             </div>
         }
 
-        <table class="table">
+        <table class="table table-responsive">
 
             <thead>
                 <tr>
@@ -155,6 +186,14 @@ else
 
             </tbody>
         </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 

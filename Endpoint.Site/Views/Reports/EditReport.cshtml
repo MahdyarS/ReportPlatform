@@ -13,51 +13,6 @@
     </div>
 }
 
-@*<form asp-controller="Reports" asp-action="EditReport" method="post">
-    <input type="hidden" asp-for="Date">
-    <input type="hidden" asp-for="ReportId">
-
-    <table class="table">
-        <thead>
-            <tr>
-                <td>تاریخ</td>
-                <td>ساعت شروع کار</td>
-                <td>ساعت پایان کار</td>
-                <td>حضوری/غیرحضوری</td>
-                <td class="col-6">توضیحات</td>
-            </tr>
-        </thead>
-        <tbody>
-
-            <tr>
-                <td>
-                    @Model.Date
-                </td>
-                <td>
-                    <input type="time" asp-for="BeginningTime" />
-                    <span asp-validation-for="BeginningTime" class="text-danger"></span>
-
-                </td>
-                <td>
-                    <input type="time" asp-for="FinishTime" />
-                    <span asp-validation-for="FinishTime" class="text-danger"></span>
-
-                </td>
-                <td>
-                    <input asp-for="IsRemote" />
-                </td>
-                <td class="col-6">
-                    <textarea rows="8" class="col-12" asp-for="ReportsDetail"></textarea>
-                    <span asp-validation-for="ReportsDetail" class="text-danger"></span>
-
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
-    <button class="btn btn-primary" type="submit">ثبت تغییرات</button>
-</form>
-*@
 
 
 <div class="row justify-content-md-center">
