@@ -6,12 +6,37 @@
 
 <h1>گزارش ها بر اساس تاریخ</h1>
 <div class="row">
-    <form asp-action="GetReportsOfEachDay">
+    <form class-"col-md-4" asp-action="GetReportsOfEachDay">
         <label for="date">جستجوی گزارش ها در تاریخ:</label>
         <input id="date" class="date col-md-2 form-control" type="text" name="Date" value="@(Model.Data?.SearchKeyDate ?? String.Empty)" />
+        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
+        <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
         <br />
         <button type="submit" class="btn btn-outline-success">جستجو</button>
     </form>
+    <form class="col-md-4" asp-action="GetReportsOfEachDay">
+        <div>
+            فیلتر کردن گزارش ها بر اساس حضوری/غیرحضوری:
+        </div>
+        <div class="form-check mt-3">
+
+            <input name="" class="form-check-input" type="checkbox" id="hasNoneRemote">
+            <label class="form-check-label" for="flexCheckDefault">
+                نمایش گزارش های حضوری
+            </label>
+        </div>
+        <div class="form-check">
+            <input name="" class="form-check-input" type="checkbox" id="hasRemote">
+            <label class="form-check-label" for="flexCheckChecked">
+                نمایش گزارش های غیر حضوری
+            </label>
+            <input name="hasNoneRemoteReports" id="hasNoneRemoteValue" type="hidden" />
+            <input name="hasRemoteReports" id="hasRemoteValue" type="hidden" />
+            <input name="date" type="hidden" value="@Model.Data.SearchKeyDate" />
+        </div>
+        <button class="btn btn-outline-secondary mt-2" type="submit">اعمال فیلتر</button>
+    </form>
+
 </div>
 
 
@@ -32,6 +57,7 @@ else
         <thead>
             <tr>
                 <th class="col-1">نام و نام خانوادگی</th>
+                <th class="col-1">حضوری/غیرحضوری</th>
                 <th class="col-1">ساعت شروع کار</th>
                 <th class="col-1">ساعت پایان کار</th>
                 <th class="col-1">مجموع ساعت کار</th>
@@ -43,6 +69,7 @@ else
             {
                 <tr>
                     <td class="col-1">@item.UsersFirstName @item.UsersLastName</td>
+                    <td class="col-1">@item.IsRemote</td>
                     <td class="col-1">@item.StartWorkTime</td>
                     <td class="col-1">@item.FinishWorkTime</td>
                     <td class="col-1">@item.TotalWorkTime</td>
@@ -58,6 +85,8 @@ else
                 <a class="page-link"
                asp-action="GetReportsOfEachDay"
                asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
                asp-route-PageIndex="1">
                     اولین صفحه
@@ -74,6 +103,8 @@ else
                     <a class="page-link"
                asp-action="GetReportsOfEachDay"
                asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
                asp-route-PageIndex="@(Model.Data.RequestedPageIndex-1)">
                         صفحه قبلی
@@ -93,6 +124,8 @@ else
                         <a class="page-link"
                asp-action="GetReportsOfEachDay"
                asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
                asp-route-PageIndex="@i">
                             @i
@@ -111,6 +144,8 @@ else
                     <a class="page-link"
                asp-action="GetReportsOfEachDay"
                asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
                asp-route-PageIndex="@(Model.Data.RequestedPageIndex+1)">
                         صفحه بعدی
@@ -122,6 +157,8 @@ else
                 <a class="page-link"
                asp-action="GetReportsOfEachDay"
                asp-route-Date="@Model.Data.SearchKeyDate"
+               asp-route-HasRemoteReports="@Model.Data.HasRemoteReports.ToString()"
+               asp-route-HasNoneRemoteReports="@Model.Data.HasNoneRemoteReports.ToString()"
                asp-route-ItemsInPageCount="@Model.Data.RequestedItemsInPageCount"
                asp-route-PageIndex="@Model.Data.PagesCount">
                     آخرین صفحه
@@ -136,6 +173,43 @@ else
 }
 
 @section Scripts{
+
+<script>
+
+    var hasRemote = @Json.Serialize(Model.Data.HasRemoteReports);
+    var hasNoneRemote = @Json.Serialize(Model.Data.HasNoneRemoteReports);
+
+    $(document).ready(function(){
+            $('#hasRemote').prop('checked',hasRemote);
+            $('#hasNoneRemote').prop('checked',hasNoneRemote);
+
+            $('#hasRemoteValue').prop('value',hasRemote? 'True':'False');
+            $('#hasNoneRemoteValue').prop('value',hasNoneRemote? 'True':'False');
+    })
+
+    $('#hasRemote').on('change',function(){
+
+        if ($('#hasRemote').is(':checked')) {
+            $('#hasRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasRemoteValue').attr('value', 'False');
+          }
+
+
+    })
+    $('#hasNoneRemote').on('change',function(){
+
+        if ($('#hasNoneRemote').is(':checked')) {
+            $('#hasNoneRemoteValue').attr('value', 'True');
+          } else {
+            $('#hasNoneRemoteValue').attr('value', 'False');
+          }
+
+
+    })
+
+</script>
+
 <script src="~/js/persian-date.min.js"></script>
 
 

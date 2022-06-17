@@ -94,7 +94,9 @@ namespace Endpoint.Site.Areas.Admin.Controllers
             {
                 Date = request.Date,
                 ItemsInPageCount = request.ItemsInPageCount,
-                RequestedPageIndex = request.PageIndex
+                RequestedPageIndex = request.PageIndex,
+                HasNoneRemoteReports = request.HasNoneRemoteReports == "False" ? false : true,
+                HasRemoteReports = request.HasRemoteReports == "False" ? false : true,
             });
             return View(result);
         }

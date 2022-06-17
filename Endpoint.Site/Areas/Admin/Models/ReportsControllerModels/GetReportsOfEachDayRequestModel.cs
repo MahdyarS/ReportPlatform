@@ -9,6 +9,9 @@ namespace Endpoint.Site.Areas.Admin.Models.ReportsControllerModels
         public int PageIndex { get; set; } = 1;
         public int ItemsInPageCount { get; set; } = 20;
         public int BaseWorkTime { get; set; } = 0;
+        public string? HasRemoteReports { get; set; } = "";
+        public string? HasNoneRemoteReports { get; set; } = "";
+
     }
 }
 
