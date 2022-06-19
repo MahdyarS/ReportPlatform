@@ -80,6 +80,18 @@
                             <div class="form-body">
 
                                 <div class="row">
+                                    <diV class="row col-6">
+                                        <div class="col-3">
+                                            <label for="IsRemote">غیر حضوری</label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="isRemote" type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="noneRemote" class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="timesheetinput5">زمان شروع</label>
@@ -98,17 +110,16 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <diV class="row col-6">
-                                        <div class="col-3">
-                                            <label for="IsRemote">غیر حضوری</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
-
-                                        </div>
-                                    </div>
+                            <div id="remote" class="row d-none">
+                                <label>مجموع ساعت کار</label>
+                                <div class="col-6 col-md-2 d-flex align-items-center">
+                                    <input name="RemoteWorkedMinute" class="form-control m-1" style="width:72px" type="number"  min="0" max="59" value="0" />
+                                    <b>
+                                        :
+                                    </b>
+                                    <input name="RemoteWorkedHour" class="form-control m-1" style="width:72px" type="number" min="0" max="23" value="0" />
                                 </div>
+                            </div>
 
 								<div class="form-group mt-3">
 									<label for="issueinput8">متن گزارش</label>
@@ -144,7 +155,6 @@
                 </div>
             </div>
         </div>
-
 </div>
 
 
@@ -154,6 +164,26 @@
 
 
 @section Scripts{
+
+<script>
+
+    
+
+    $('#isRemote').on('change',function(){
+
+        if($('#isRemote').is(':checked')){
+            $('#remote').removeClass('d-none');
+            $('#noneRemote').addClass('d-none');
+        }
+        else{
+            $('#noneRemote').removeClass('d-none');
+            $('#remote').addClass('d-none');
+        }
+    });
+
+
+
+</script>
 
     <script>
 

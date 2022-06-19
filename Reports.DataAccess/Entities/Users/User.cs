@@ -16,7 +16,6 @@ namespace Reports.DataAccess.Entities.Users
         public string Position { get; set; }
         public bool IsRemoved { get; set; } = false;
 
-
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<Period> Periods { get; set; }
     }

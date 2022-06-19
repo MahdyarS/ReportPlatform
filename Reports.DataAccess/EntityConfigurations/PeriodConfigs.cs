@@ -15,6 +15,9 @@ namespace Reports.DataAccess.EntityConfigurations
         {
             builder.Property(p => p.StartPeriod).HasColumnType("date");
             builder.Property(p => p.FinishPeriod).HasColumnType("date");
+            builder.HasQueryFilter(p => !p.IsRemoved);
+
+            return;
         }
     }
 }

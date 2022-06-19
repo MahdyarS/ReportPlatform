@@ -5,6 +5,7 @@ using Reports.Helpers.Dtos.ResultDto;
 using Reports.Helpers.UtilityServices.DateConversionService;
 using Reports.Helpers.UtilityServices.FilterResults;
 using Reports.Helpers.UtilityServices.Pagination;
+using Reports.Helpers.UtilityServices.TimeFormat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace Reports.Application.Services.ReportServices.GetAllReportsOfOneDay
                     p.User.FirstName,
                     p.User.LastName,
                     p.StartWorkTime,
-                    p.FinishWorkTime,
+                    p.TotalWorkedMinutes,
                     p.ReportsDetail,
                     p.IsRemote
                 }).ToPaged(request.RequestedPageIndex, request.ItemsInPageCount);
@@ -81,10 +82,10 @@ namespace Reports.Application.Services.ReportServices.GetAllReportsOfOneDay
             {
                 UsersFirstName = p.FirstName,
                 UsersLastName = p.LastName,
-                StartWorkTime = p.StartWorkTime.ToString("hh':'mm"),
-                FinishWorkTime = p.FinishWorkTime.ToString("hh':'mm"),
+                StartWorkTime = p.IsRemote? "ندارد": p.StartWorkTime!.Value.ToString("hh':'mm"),
+                FinishWorkTime = p.IsRemote ? "ندارد" : p.StartWorkTime!.Value.Add(new TimeSpan(0,p.TotalWorkedMinutes,0)).ToString("hh':'mm"),
                 ReportsDescription = p.ReportsDetail,
-                TotalWorkTime = p.FinishWorkTime.Subtract(p.StartWorkTime).ToString("hh':'mm"),
+                TotalWorkTime = TimeFormat.TotalMinutesToTimeFormat(p.TotalWorkedMinutes),
                 IsRemote = p.IsRemote ? "غیرحضوری" : "حضوری",
             }).ToList();
             result.Data.RequestedPageIndex = paginationResult.RequestedPageIndex;

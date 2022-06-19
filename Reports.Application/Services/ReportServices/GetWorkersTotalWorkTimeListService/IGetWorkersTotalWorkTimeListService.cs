@@ -5,6 +5,7 @@ using Reports.Helpers.Dtos.ResultDto;
 using Reports.Helpers.UtilityServices.DateConversionService;
 using Reports.Helpers.UtilityServices.FilterResults;
 using Reports.Helpers.UtilityServices.Pagination;
+using Reports.Helpers.UtilityServices.TimeFormat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,19 @@ namespace Reports.Application.Services.ReportServices.GetWorkersTotalWorkTimeLis
             bool periodIsSearched = false;
             bool specificDateIsSearched = false;
 
+            var result = new ResultDto<WorkersTotalWorkTimeResultDto>(false, "")
+            {
+                Data = new WorkersTotalWorkTimeResultDto
+                {
+                    PeriodIsSearched = periodIsSearched,
+                    SpecificDateIsSearched = specificDateIsSearched,
+                    RequestedPageIndex = request.PageIndex,
+                    ItemsInPageCount = request.ItemsInPageCount,
+                    BaseWorkTime = request.BaseWorkTime,
+                }
+            };
+
+
             if (!String.IsNullOrEmpty(request.StartPeriod) && !String.IsNullOrEmpty(request.FinishPeriod))
             {
                 periodIsSearched = true;
@@ -44,20 +58,14 @@ namespace Reports.Application.Services.ReportServices.GetWorkersTotalWorkTimeLis
                 finishPeriod = request.FinishPeriod.ShamsiStringToDateTime();
 
                 if (startPeriod > finishPeriod)
-                    return new ResultDto<WorkersTotalWorkTimeResultDto>(false, "تاریخ پایان بازه نمی تواند قبل از شروع آن باشد!")
-                    {
-                        Data = new WorkersTotalWorkTimeResultDto
-                        {
-                            StartPeriod = startPeriod?.ConvertMiladiToShamsi(),
-                            FinishPeriod = finishPeriod?.ConvertMiladiToShamsi(),
-                            RequestedSearchKeyDate = searchKeyDate?.ConvertMiladiToShamsi(),
-                            PeriodIsSearched = periodIsSearched,
-                            SpecificDateIsSearched = specificDateIsSearched,
-                            RequestedPageIndex = request.PageIndex,
-                            ItemsInPageCount = request.ItemsInPageCount,
-                        }
+                {
+                    result.Message = "تاریخ پایان بازه نمی تواند قبل از شروع آن باشد!";
+                    result.Data.StartPeriod = startPeriod?.ConvertMiladiToShamsi();
+                    result.Data.FinishPeriod = finishPeriod?.ConvertMiladiToShamsi();
+                    result.Data.RequestedSearchKeyDate = searchKeyDate?.ConvertMiladiToShamsi();
 
-                    };
+                    return result;
+                }
 
             }
             else if (!String.IsNullOrEmpty(request.SearchKeyDate))
@@ -68,142 +76,80 @@ namespace Reports.Application.Services.ReportServices.GetWorkersTotalWorkTimeLis
             else
             {
                 periodIsSearched = true;
-                startPeriod = DateTime.Now.AddDays(-7);
+                startPeriod = DateTime.Now.Date.AddDays(-7);
                 finishPeriod = DateTime.Now;
             }
+
+            result.Data.StartPeriod = startPeriod?.ConvertMiladiToShamsi();
+            result.Data.FinishPeriod = finishPeriod?.ConvertMiladiToShamsi();
+            result.Data.RequestedSearchKeyDate = searchKeyDate?.ConvertMiladiToShamsi();
 
             var timeFiltersList = new List<IFilterService<Report>>();
             timeFiltersList.Add(new PeriodFilter(startPeriod, finishPeriod));
             timeFiltersList.Add(new SpecificDateFilter(searchKeyDate));
 
 
-            var neededDataFromReportsInPeriod = _context.Reports.Include(p => p.User)
-                                                    .ApplyFilters(timeFiltersList)
-                                                    .Select(p => new
-                                                    {
-                                                        p.UserId,
-                                                        UsersFirstName = p.User.FirstName,
-                                                        UsersLastName = p.User.LastName,
-                                                        ReportsWorkTime = p.FinishWorkTime.Subtract(p.StartWorkTime),
-                                                        p.IsRemote
-                                                    });
 
-            var groupedResult = (from p in neededDataFromReportsInPeriod
-                                 group p by p.UserId into r
-                                 select r).ToList();
+            var paginationResult = _context.Reports
+                        .ApplyFilters(timeFiltersList)
+                        .GroupBy(p => p.UserId)
+                        .Select(p => new
+                        {
+                            UserId = p.Key,
+                            IsRemote = p.First().IsRemote,
+                            TotalWorkedMinutesInPeriod = p.Sum(p => p.TotalWorkedMinutes),
+                            TotalRemoteWorkedMinutes = p.Where(u => u.IsRemote).Sum(u => u.TotalWorkedMinutes),
+                        }).Where(p => p.TotalWorkedMinutesInPeriod > request.BaseWorkTime * 60)
+                        .ToPaged(request.PageIndex, request.ItemsInPageCount);
 
-            var workersList = new List<WorkerToShowInListDto>();
-
-            foreach (var item in groupedResult)
+            if (!paginationResult.Succeeded)
             {
-                double totalMinutes = 0;
-                double totalRemoteTimeMinutes = 0;
-                double totalNoneRemoteTimeMinutes = 0;
-                foreach (var workTimeSample in item)
+                result.Message = paginationResult.Message;
+                return result;
+            }
+
+            var usersList = _context.Users.Select(p => new
+            {
+                p.Id,
+                p.FirstName,
+                p.LastName,
+            }).Where(u => paginationResult.RequestedPageList.Select(p => p.UserId).Contains(u.Id)).ToList();
+
+            result.Data.WorkersList = new List<WorkerToShowInListDto>();
+
+            foreach (var item in paginationResult.RequestedPageList)
+            {
+                result.Data.WorkersList.Add(new WorkerToShowInListDto()
                 {
-                    totalMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
-
-                    if(workTimeSample.IsRemote)
-                        totalRemoteTimeMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
-                    else
-                        totalNoneRemoteTimeMinutes += workTimeSample.ReportsWorkTime.TotalMinutes;
-                }
-                int totalHours = (int)totalMinutes / 60;
-                int totalRemoteHours = (int)totalRemoteTimeMinutes / 60;
-                int totalNoneRemoteHours = (int)totalNoneRemoteTimeMinutes / 60;
-
-                int Minutes = (int)totalMinutes % 60;
-                string minutesString = Minutes < 10 ? "0" + Minutes.ToString() : Minutes.ToString();
-                string hoursString = totalHours < 10 ? "0" + totalHours.ToString() : totalHours.ToString();
-
-                int remoteMinutes = (int)totalRemoteTimeMinutes % 60;
-                string remoteMinutesString = remoteMinutes < 10 ? "0" + remoteMinutes.ToString() : remoteMinutes.ToString();
-                string remoteHoursString = totalRemoteHours < 10 ? "0" + totalRemoteHours.ToString() : totalRemoteHours.ToString();
-
-                int noneRemoteMinutes = (int)totalNoneRemoteTimeMinutes % 60;
-                string noneRemoteMinutesString = noneRemoteMinutes < 10 ? "0" + noneRemoteMinutes.ToString() : noneRemoteMinutes.ToString();
-                string noneRemoteHoursString = totalNoneRemoteHours < 10 ? "0" + totalNoneRemoteHours.ToString() : totalNoneRemoteHours.ToString();
-
-                workersList.Add(new WorkerToShowInListDto()
-                {
-                    UserId = item.Key,
-                    UsersFirstName = item.FirstOrDefault()?.UsersFirstName,
-                    UsersLastName = item.FirstOrDefault()?.UsersLastName,
-                    WorkHour = totalHours,
-                    WorkTime = hoursString + ":" + minutesString,
-                    RemoteWorkTime = remoteHoursString + ":" + remoteMinutesString,
-                    NoneRemoteWorkTime = noneRemoteHoursString + ":" + noneRemoteMinutesString
+                    UserId = item.UserId,
+                    RemoteWorkTime = TimeFormat.TotalMinutesToTimeFormat(item.TotalRemoteWorkedMinutes),
+                    NoneRemoteWorkTime = TimeFormat.TotalMinutesToTimeFormat(item.TotalWorkedMinutesInPeriod - item.TotalRemoteWorkedMinutes),
+                    WorkHour = item.TotalWorkedMinutesInPeriod / 60,
+                    WorkTime = TimeFormat.TotalMinutesToTimeFormat(item.TotalWorkedMinutesInPeriod),
+                    UsersFirstName = usersList.Single(p => p.Id == item.UserId).FirstName,
+                    UsersLastName = usersList.Single(p => p.Id == item.UserId).LastName,
                 });
             }
 
-            var workTimeFiltersList = new List<IFilterService<WorkerToShowInListDto>>();
-            workTimeFiltersList.Add(new BaseWorkTimeFilter(request.BaseWorkTime));
+            result.Succeeded = true;
+            result.Data.FirstPageIndexToShow = paginationResult.FirstPageIndexToShow;
+            result.Data.LastPageIndexToShow = paginationResult.LastPageIndexToShow;
+            result.Data.NextIsDisabled = paginationResult.NextIsDisabled;
+            result.Data.PagesCount = paginationResult.PagesCount;
+            result.Data.PrevIsDisabled = paginationResult.PrevIsDiabled;
+            result.Data.PeriodIsSearched = periodIsSearched;
+            result.Data.SpecificDateIsSearched = specificDateIsSearched;
+            result.Data.RequestedPageIndex = request.PageIndex;
+            result.Data.ItemsInPageCount = request.ItemsInPageCount;
 
+            result.Message = specificDateIsSearched ? $"نمایش مجموع ساعت کار هر کارمند در تاریخ {searchKeyDate?.ConvertMiladiToShamsi()}" : $"نمایش ساعت کار مجموع کارکنان از تاریخ {startPeriod?.ConvertMiladiToShamsi()} تا تاریخ {finishPeriod?.ConvertMiladiToShamsi()}";
 
-            var paginationResult = workersList
-                                    .ApplyFilters(workTimeFiltersList)
-                                    .OrderByDescending(x => x.UsersLastName)
-                                    .ThenBy(x => x.UsersFirstName)
-                                    .ToPaged(request.PageIndex, request.ItemsInPageCount);
+            return result;
 
-            if (!paginationResult.Succeeded)
-                return new ResultDto<WorkersTotalWorkTimeResultDto>(false, paginationResult.Message)
-                {
-                    Data = new WorkersTotalWorkTimeResultDto
-                    {
-                        StartPeriod = startPeriod?.ConvertMiladiToShamsi(),
-                        FinishPeriod = finishPeriod?.ConvertMiladiToShamsi(),
-                        RequestedSearchKeyDate = searchKeyDate?.ConvertMiladiToShamsi(),
-                        PeriodIsSearched = periodIsSearched,
-                        SpecificDateIsSearched = specificDateIsSearched,
-                        RequestedPageIndex = request.PageIndex,
-                        ItemsInPageCount = request.ItemsInPageCount
-
-                    }
-                };
-
-
-            return new ResultDto<WorkersTotalWorkTimeResultDto>(true, specificDateIsSearched ? $"نمایش مجموع ساعت کار هر کارمند در تاریخ {searchKeyDate?.ConvertMiladiToShamsi()}" : $"نمایش ساعت کار مجموع کارکنان از تاریخ {startPeriod?.ConvertMiladiToShamsi()} تا تاریخ {finishPeriod?.ConvertMiladiToShamsi()}")
-            {
-                Data = new WorkersTotalWorkTimeResultDto
-                {
-                    WorkersList = paginationResult.RequestedPageList,
-                    StartPeriod = startPeriod?.ConvertMiladiToShamsi(),
-                    FinishPeriod = finishPeriod?.ConvertMiladiToShamsi(),
-                    RequestedSearchKeyDate = searchKeyDate?.ConvertMiladiToShamsi(),
-                    FirstPageIndexToShow = paginationResult.FirstPageIndexToShow,
-                    LastPageIndexToShow = paginationResult.LastPageIndexToShow,
-                    NextIsDisabled = paginationResult.NextIsDisabled,
-                    PagesCount = paginationResult.PagesCount,
-                    PrevIsDisabled = paginationResult.PrevIsDiabled,
-                    PeriodIsSearched = periodIsSearched,
-                    SpecificDateIsSearched = specificDateIsSearched,
-                    RequestedPageIndex = request.PageIndex,
-                    ItemsInPageCount = request.ItemsInPageCount,
-                    BaseWorkTime = request.BaseWorkTime
-                }
-
-            };
         }
 
     }
 
-    public class BaseWorkTimeFilter : IFilterService<WorkerToShowInListDto>
-    {
-        public int BaseWorkHour { get; set; }
-
-        public BaseWorkTimeFilter(int baseWorkHour)
-        {
-            BaseWorkHour = baseWorkHour;
-        }
-
-        public IEnumerable<WorkerToShowInListDto> Execute(IEnumerable<WorkerToShowInListDto> source)
-        {
-            if (this.BaseWorkHour > 0)
-                return source.Where(x => x.WorkHour > this.BaseWorkHour);
-            return source;
-        }
-    }
 
     public class PeriodFilter : IFilterService<Report>
     {

@@ -16,6 +16,6 @@ namespace Reports.DataAccess.Entities.Reports
         public DateTime StartPeriod { get; set; }
         public DateTime FinishPeriod { get; set; }
         public string PeriodDescription { get; set; }
-
+        public bool IsRemoved { get; set; } = false;
     }
 }

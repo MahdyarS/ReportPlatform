@@ -64,6 +64,7 @@ namespace Endpoint.Site.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewReport(ReportToAddViewModel report)
         {
+
             if (!ModelState.IsValid)
             {
                 return View(report);
@@ -76,7 +77,8 @@ namespace Endpoint.Site.Controllers
                 FinishTime = report.FinishTime,
                 ReportsDetail = report.ReportsDetail,
                 IsRemote = report.IsRemote,
-                UserName = User.Identity.Name
+                RemoteWorkedTime = report.IsRemote? new TimeSpan(report.RemoteWorkedHour!.Value, report.RemoteWorkedMinute!.Value, 0) : null,
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             });
 
             if (result.Succeeded)
@@ -116,20 +118,23 @@ namespace Endpoint.Site.Controllers
         [HttpGet]
         public IActionResult EditReport(int ReportId)
         {
-            var result = _getReportToEditById.Execute(ReportId, User.Identity.Name);
+            var result = _getReportToEditById.Execute(ReportId, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (!result.Succeeded)
             {
                 TempData["Error"] = result.Message;
                 return RedirectToAction("GetReports");
             }
-            //ViewBag.Error = "";
+
             return View(new EditReportViewModel
             {
+                ReportId = ReportId,
                 BeginningTime = result.Data.BeginningTime,
                 FinishTime = result.Data.FinishTime,
                 Date = result.Data.Date,
                 IsRemote = result.Data.IsRemote,
+                RemoteWorkedMinute = result.Data.RemoteWorkedMinute,
+                RemoteWorkedHour = result.Data.RemoteWorkedHour,
                 ReportsDetail = result.Data.ReportsDetail
             });
         }
@@ -151,6 +156,7 @@ namespace Endpoint.Site.Controllers
                 ReportId = request.ReportId,
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                 Date = request.Date,
+                RemoteWorkedTime = request.IsRemote ? new TimeSpan(request.RemoteWorkedHour!.Value,request.RemoteWorkedMinute!.Value,0) : null,
             });
 
             if (!result.Succeeded)
@@ -185,7 +191,7 @@ namespace Endpoint.Site.Controllers
         [HttpPost]
         public IActionResult AddPeriod(AddPeriodViewModel request)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(request);
 
             var result = _addNewPeriodService.Execute(new NewPeriodToAddRequestDto

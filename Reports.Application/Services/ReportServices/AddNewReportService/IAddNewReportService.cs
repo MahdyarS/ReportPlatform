@@ -31,8 +31,11 @@ namespace Reports.Application.Services.ReportServices.AddNewReportService
 
         public async Task<ResultDto> Execute(ReportToAddRequestDto request)
         {
-            if (request.BeginningTime == null || request.FinishTime == null)
-                return new ResultDto(false, "ساعت شروع و پایان کار الزامیست!");
+            if (!request.IsRemote && (request.BeginningTime == null || request.FinishTime == null))
+                return new ResultDto(false, "ساعت شروع و پایان برای گزارش کار حضوری الزامیست!");
+
+            if (request.IsRemote && request.RemoteWorkedTime == null)
+                return new ResultDto(false, "ساعت کار برای گزارش کار غیرحضوری الزامیست!");
 
             if (request.BeginningTime > request.FinishTime)
                 return new ResultDto(false,"زمان پایان کار نمی تواند قبل از شروع کار باشد!");
@@ -45,20 +48,24 @@ namespace Reports.Application.Services.ReportServices.AddNewReportService
             if (date < DateTime.Now.AddDays(-7))
                 return new ResultDto(false, "شما مجاز به ثبت گزارش در ناریخ های پیش از یک هفته قبل نیستید!");
 
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
 
 
             var report = new Report
             {
                 Date = date,
-                StartWorkTime = request.BeginningTime!.Value,
-                FinishWorkTime = request.FinishTime!.Value,
+                StartWorkTime = request.BeginningTime,
                 InsertionDateAndTime = DateTime.Now,
-                User = user,
+                UserId = request.UserId,
                 ReportsDetail = request.ReportsDetail,
                 IsRemote = request.IsRemote,
             };
+
+            if (request.IsRemote)
+                report.TotalWorkedMinutes = (short)request.RemoteWorkedTime!.Value.TotalMinutes;
+            else
+                report.TotalWorkedMinutes = (short)request.FinishTime.Value.Subtract(request.BeginningTime!.Value).TotalMinutes;
+            
+
             _context.Reports.Add(report);
             _context.SaveChanges();
 
@@ -69,10 +76,11 @@ namespace Reports.Application.Services.ReportServices.AddNewReportService
     public class ReportToAddRequestDto
     {
         public string Date { get; set; }
+        public TimeSpan? RemoteWorkedTime { get; set; }
         public TimeSpan? BeginningTime { get; set; }
         public TimeSpan? FinishTime { get; set; }
         public string ReportsDetail { get; set; }
-        public string UserName { get; set; }
+        public string UserId { get; set; }
         public bool IsRemote { get; set; } = false;
     }
 }

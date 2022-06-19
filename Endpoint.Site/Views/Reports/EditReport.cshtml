@@ -42,6 +42,17 @@
                             </div>
 
                             <div class="row">
+                                    <diV class="row col-6">
+                                        <div class="col-md-3">
+                                            <label for="IsRemote">غیرحضوری</label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="isRemote" asp-for="IsRemote" />
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div id="noneRemote" class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="startPeriod">ساعت شروع کار</label>
@@ -57,16 +68,16 @@
                                     </div>
                                 </div>
                             </div>
-                             <div class="row">
-                                    <diV class="row col-6">
-                                        <div class="col-md-3">
-                                            <label for="IsRemote">غیر حضوری</label>
-                                        </div>
-                                        <div class="col-3">
-                                            <input asp-for="IsRemote" />
-                                        </div>
-                                    </div>
+                            <div id="remote" class="row">
+                                <label>مجموع ساعت کار</label>
+                                <div class="col-6 col-md-2 d-flex align-items-center">
+                                    <input asp-for="RemoteWorkedMinute" class="form-control m-1" style="width:72px" type="number"  min="0" max="59" value="@(Model?.RemoteWorkedMinute ?? 0)" />
+                                    <b>
+                                        :
+                                    </b>
+                                    <input asp-for="RemoteWorkedHour" class="form-control m-1" style="width:72px" type="number" min="0" max="23" value="@(Model?.RemoteWorkedHour ?? 0)" />
                                 </div>
+                            </div>
 
 
                             <div class="form-group mt-3">
@@ -101,6 +112,32 @@
 
 
 @section Scripts{
+
+<script>
+
+    var isRemote = @(Json.Serialize(Model?.IsRemote ?? false));
+
+    $('#isRemote').on('change',function(){
+
+        if($('#isRemote').is(':checked')){
+            $('#remote').removeClass('d-none');
+            $('#noneRemote').addClass('d-none');
+        }
+        else{
+            $('#noneRemote').removeClass('d-none');
+            $('#remote').addClass('d-none');
+        }
+    });
+
+    $(document).ready(function(){
+        if(isRemote)
+            $('#noneRemote').addClass('d-none');
+        else
+            $('#remote').addClass('d-none');
+    })
+</script>
+
+
 <script src="~/js/persian-date.min.js"></script>
 
 

@@ -51,13 +51,14 @@ namespace Reports.Application.Services.ReportServices.GetWorkTimeChart
             if (!String.IsNullOrEmpty(request.UserId))
                 query = query.Where(p => p.UserId == request.UserId);
 
-            var WorkTimes = query.Select(p => new { Date = p.Date, WorkTimeInDay = p.FinishWorkTime.Subtract(p.StartWorkTime) }).ToList();
+            var WorkTimes = query.Select(p => new { Date = p.Date, WorkTimeInDay = new TimeSpan(0,p.TotalWorkedMinutes,0) }).ToList();
 
 
             var WorkTimeGroup = (from n in WorkTimes
                                  group n by n.Date into groupedWorkTimes
                                  orderby groupedWorkTimes.Key
                                  select groupedWorkTimes).ToList();
+            
 
             List<string> chartDates = new List<string>();
             List<int> chartWorkTimes = new List<int>();

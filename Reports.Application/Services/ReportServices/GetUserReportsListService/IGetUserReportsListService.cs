@@ -11,6 +11,7 @@ using Reports.Helpers.UtilityServices.DateConversionService;
 using Microsoft.EntityFrameworkCore;
 using Reports.DataAccess.Entities.Reports;
 using Reports.Helpers.UtilityServices.FilterResults;
+using Reports.Helpers.UtilityServices.TimeFormat;
 
 namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 {
@@ -44,11 +45,11 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                     RequestedPageIndex = request.PageIndex,
                     HasRemoteReports = request.HasRemoteReports,
                     HasNoneRemoteReports = request.HasNoneRemoteReports
-                    
+
                 }
             };
             var dateValidationResult = DateValidate(request.StartPreriod, request.FinishPreriod, request.SearchKeyDate);
-            if(dateValidationResult.IsInvalidPeriod)
+            if (dateValidationResult.IsInvalidPeriod)
             {
                 result.Message = "بازه وارد شده معتبر نیست!";
                 return result;
@@ -67,7 +68,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 
             if (dateValidationResult.PeriodIsSearched)
             {
-                var totalTicks = query.Select(p => new { WorkTimeInDay = p.FinishWorkTime.Subtract(p.StartWorkTime) });
+                var totalTicks = query.Select(p => new { WorkTimeInDay = new TimeSpan(0, p.TotalWorkedMinutes, 0) });
 
                 double totalMinutes = 0;
                 foreach (var item in totalTicks)
@@ -83,11 +84,11 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
             {
                 ReportId = p.ReportId,
                 Date = p.Date.ConvertMiladiToShamsi(),
-                FinishWorkTime = p.FinishWorkTime.ToString("hh':'mm"),
-                StartWorkTime = p.StartWorkTime.ToString("hh':'mm"),
+                FinishWorkTime = p.IsRemote ? "ندارد" : p.StartWorkTime!.Value.Add(new TimeSpan(0, p.TotalWorkedMinutes, 0)).ToString("hh':'mm"),
+                StartWorkTime = p.IsRemote ? "ندارد" : p.StartWorkTime!.Value.ToString("hh':'mm"),
                 ReportsDetail = p.ReportsDetail,
                 IsRemote = p.IsRemote ? "غیرحضوری" : "حضوری",
-                WorkTime = p.FinishWorkTime.Subtract(p.StartWorkTime).ToString("hh':'mm"),
+                WorkTime = TimeFormat.TotalMinutesToTimeFormat(p.TotalWorkedMinutes),
             })
             .ToPaged(request.PageIndex, request.ItemsInPageCount);
 
@@ -109,7 +110,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
             return result;
         }
 
-        private DateValidationResultDto DateValidate(string startPeriod,string finishPeriod,string searchKeyDate)
+        private DateValidationResultDto DateValidate(string startPeriod, string finishPeriod, string searchKeyDate)
         {
             var result = new DateValidationResultDto();
             if (!String.IsNullOrEmpty(searchKeyDate))
@@ -117,7 +118,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                 result.SearchKeyDate = searchKeyDate.ShamsiStringToDateTime();
                 result.SpecificDateIsSearched = true;
             }
-            else if(!String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod))
+            else if (!String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod))
             {
                 result.StartPeriod = startPeriod.ShamsiStringToDateTime();
                 result.FinishPeriod = finishPeriod.ShamsiStringToDateTime();
@@ -125,7 +126,7 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
                     result.IsInvalidPeriod = true;
                 result.PeriodIsSearched = true;
             }
-            if((!String.IsNullOrEmpty(startPeriod) && String.IsNullOrEmpty(finishPeriod)) || (String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod)))
+            if ((!String.IsNullOrEmpty(startPeriod) && String.IsNullOrEmpty(finishPeriod)) || (String.IsNullOrEmpty(startPeriod) && !String.IsNullOrEmpty(finishPeriod)))
             {
                 result.IsInvalidPeriod = true;
                 result.PeriodIsSearched = true;
@@ -157,11 +158,11 @@ namespace Reports.Application.Services.ReportServices.GetUserReportsListService
 
         public IEnumerable<Report> Execute(IEnumerable<Report> source)
         {
-            if(!HasRemoteReports && !HasNoneRemoteReports)
+            if (!HasRemoteReports && !HasNoneRemoteReports)
                 return source.Where(p => false);
-            if(!HasRemoteReports && HasNoneRemoteReports)
+            if (!HasRemoteReports && HasNoneRemoteReports)
                 return source.Where(p => p.IsRemote == false);
-            if(HasRemoteReports && !HasNoneRemoteReports)
+            if (HasRemoteReports && !HasNoneRemoteReports)
                 return source.Where(p => p.IsRemote);
             return source;
         }

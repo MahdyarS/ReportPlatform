@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reports.DataAccess.Contexts;
 
@@ -11,9 +12,10 @@ using Reports.DataAccess.Contexts;
 namespace Reports.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220618061112_addingIsRemovedToReportAndPeriod")]
+    partial class addingIsRemovedToReportAndPeriod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,6 +166,9 @@ namespace Reports.DataAccess.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
+                    b.Property<TimeSpan>("FinishWorkTime")
+                        .HasColumnType("time(1)");
+
                     b.Property<DateTime>("InsertionDateAndTime")
                         .HasColumnType("datetime2");
 
@@ -177,11 +182,8 @@ namespace Reports.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan?>("StartWorkTime")
+                    b.Property<TimeSpan>("StartWorkTime")
                         .HasColumnType("time(1)");
-
-                    b.Property<short>("TotalWorkedMinutes")
-                        .HasColumnType("smallint");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -215,15 +217,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "81fc407e-b9f4-4ada-b150-25fde9608f6a",
-                            ConcurrencyStamp = "22a48286-df23-42e9-8607-8b03d4c92a7b",
+                            Id = "10b03f73-186f-4a85-9f59-8942d75f57ff",
+                            ConcurrencyStamp = "433d59ac-4f3b-40ef-b499-1776969669f4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e35f889a-e861-497a-8740-ce781882d862",
-                            ConcurrencyStamp = "48ce351d-6732-4acb-a92d-ee0404f43fa4",
+                            Id = "97bda5a2-fbaf-4e0b-9af3-0709cd1edd5b",
+                            ConcurrencyStamp = "e98d05b4-8598-42a3-95bc-fd7092e80fe1",
                             Name = "User",
                             NormalizedName = "USER"
                         });

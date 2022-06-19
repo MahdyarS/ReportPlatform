@@ -32,7 +32,7 @@ namespace Reports.Application.Services.ReportServices.DeleteReportService
             if (report.User.UserName != UserName)
                 return new ResultDto(false, "عملیات غیرمجاز!");
 
-            _context.Reports.Remove(report);
+            report.IsRemoved = true;
             _context.SaveChanges();
 
             return new ResultDto(true, "گزارش مورد نظر با موفقیت حذف شد!");

@@ -2,6 +2,7 @@
 using Reports.Application.Services.ReportServices.GetWorkTimeChart;
 using Reports.DataAccess.Contexts;
 using Reports.Helpers.UtilityServices.DateConversionService;
+using Reports.Helpers.UtilityServices.TimeFormat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Reports.Application.Services.MutitaskServices.AdminPanelHomePageServic
                 UsersFirstName = p.User.FirstName,
                 UsersLastName = p.User.LastName,
                 ReportsDetail = p.ReportsDetail,
-                WorkTime = p.FinishWorkTime.Subtract(p.StartWorkTime).ToString("hh':'mm"),
+                WorkTime = TimeFormat.TotalMinutesToTimeFormat(p.TotalWorkedMinutes)
             }).ToList();
 
         }

@@ -14,10 +14,10 @@ namespace Reports.DataAccess.Entities.Reports
         public string UserId { get; set; }
         public bool IsRemote { get; set; } = false;
         public DateTime Date { get; set; }
-        public TimeSpan StartWorkTime { get; set; }
-        public TimeSpan FinishWorkTime { get; set; }
+        public TimeSpan? StartWorkTime { get; set; }
         public string ReportsDetail { get; set; }
         public DateTime InsertionDateAndTime { get; set; }
-
+        public short TotalWorkedMinutes { get; set; }
+        public bool IsRemoved { get; set; } = false;
     }
 }

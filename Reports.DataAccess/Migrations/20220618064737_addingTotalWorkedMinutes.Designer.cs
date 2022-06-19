@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reports.DataAccess.Contexts;
 
@@ -11,9 +12,10 @@ using Reports.DataAccess.Contexts;
 namespace Reports.DataAccess.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220618064737_addingTotalWorkedMinutes")]
+    partial class addingTotalWorkedMinutes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,6 +166,9 @@ namespace Reports.DataAccess.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
+                    b.Property<TimeSpan>("FinishWorkTime")
+                        .HasColumnType("time(1)");
+
                     b.Property<DateTime>("InsertionDateAndTime")
                         .HasColumnType("datetime2");
 
@@ -177,7 +182,7 @@ namespace Reports.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan?>("StartWorkTime")
+                    b.Property<TimeSpan>("StartWorkTime")
                         .HasColumnType("time(1)");
 
                     b.Property<short>("TotalWorkedMinutes")
@@ -215,15 +220,15 @@ namespace Reports.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "81fc407e-b9f4-4ada-b150-25fde9608f6a",
-                            ConcurrencyStamp = "22a48286-df23-42e9-8607-8b03d4c92a7b",
+                            Id = "62fcb5be-2708-467f-ada9-099c6efa8322",
+                            ConcurrencyStamp = "5e52a878-ea35-4f4b-baea-05a26a19a188",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "e35f889a-e861-497a-8740-ce781882d862",
-                            ConcurrencyStamp = "48ce351d-6732-4acb-a92d-ee0404f43fa4",
+                            Id = "8ede390a-5907-4fc9-9a95-589f2e917783",
+                            ConcurrencyStamp = "4aa4b8e8-9882-4371-9762-69fa3d3175b6",
                             Name = "User",
                             NormalizedName = "USER"
                         });

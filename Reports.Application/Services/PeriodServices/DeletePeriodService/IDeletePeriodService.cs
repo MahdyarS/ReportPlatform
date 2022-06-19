@@ -32,7 +32,7 @@ namespace Reports.Application.Services.PeriodServices.DeletePeriodService
             if (period.User.UserName != UserName)
                 return new ResultDto(false, "عملیات غیرمجاز");
 
-            _context.Remove(period);
+            period.IsRemoved = true;
             _context.SaveChanges();
 
             return new ResultDto(true, "بازه مورد نظر با موفقیت حذف شد!");
