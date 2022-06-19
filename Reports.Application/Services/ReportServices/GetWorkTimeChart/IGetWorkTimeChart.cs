@@ -51,49 +51,67 @@ namespace Reports.Application.Services.ReportServices.GetWorkTimeChart
             if (!String.IsNullOrEmpty(request.UserId))
                 query = query.Where(p => p.UserId == request.UserId);
 
-            var WorkTimes = query.Select(p => new { Date = p.Date, WorkTimeInDay = new TimeSpan(0,p.TotalWorkedMinutes,0) }).ToList();
+            var WorkTimes = query.Select(p => new { Date = p.Date, TotalWorkedMinutes = p.TotalWorkedMinutes,p.IsRemote });
 
 
-            var WorkTimeGroup = (from n in WorkTimes
-                                 group n by n.Date into groupedWorkTimes
-                                 orderby groupedWorkTimes.Key
-                                 select groupedWorkTimes).ToList();
+            var WorkTimeGroup = WorkTimes.GroupBy(p => p.Date).Select(p => new
+            {
+                Date = p.Key,
+                TotalWorkedMinutes = p.Sum(p =>p.TotalWorkedMinutes),
+                RemoteWorkedMinutes = p.Where(p => p.IsRemote).Sum(p => p.TotalWorkedMinutes)
+            }).ToList();
             
 
             List<string> chartDates = new List<string>();
-            List<int> chartWorkTimes = new List<int>();
 
-            double totalMinutes = 0;
+
+            List<int> totalWorkChartWorkTimes = new List<int>();
+            List<int> remoteWorkChartWorkTimes = new List<int>();
+            List<int> noneRemoteWorkChartWorkTimes = new List<int>();
+
 
             foreach (var item in WorkTimeGroup)
             {
-                string date = item.Key.ConvertMiladiToShamsi();
+                string date = item.Date.ConvertMiladiToShamsi();
                 date = date.Substring(5);
 
                 chartDates.Add(date);
 
-                totalMinutes = 0;
+                int totalHours = item.TotalWorkedMinutes / 60;
+                int remoteHours = item.RemoteWorkedMinutes / 60;
+                int noneRemoteHours = (item.TotalWorkedMinutes - item.RemoteWorkedMinutes) / 60;
 
-                foreach (var workTime in item)
-                {
-                    totalMinutes += workTime.WorkTimeInDay.TotalMinutes;
-                }
-
-                int totalHours = (int)totalMinutes / 60;
-                if (totalMinutes % 60 > 30)
+                if (item.TotalWorkedMinutes % 60 > 30)
                     totalHours++;
-                chartWorkTimes.Add(totalHours);
+                if (item.RemoteWorkedMinutes % 60 > 30)
+                    remoteHours++;
+                if ((item.TotalWorkedMinutes - item.RemoteWorkedMinutes) % 60 > 30)
+                    noneRemoteHours++;
+
+                totalWorkChartWorkTimes.Add(totalHours);
+                remoteWorkChartWorkTimes.Add(remoteHours);
+                noneRemoteWorkChartWorkTimes.Add(noneRemoteHours);
             }
             var chartData = new ChartDataDto();
+            var remoteChartData = new ChartDataDto();
+            var noneRemoteChartData = new ChartDataDto();
 
             chartData.Dates = chartDates.ToArray();
-            chartData.WorkTimes = chartWorkTimes.ToArray();
+            chartData.WorkTimes = totalWorkChartWorkTimes.ToArray();
+
+            remoteChartData.Dates = chartDates.ToArray();
+            remoteChartData.WorkTimes = remoteWorkChartWorkTimes.ToArray();
+
+            noneRemoteChartData.Dates = chartDates.ToArray();
+            noneRemoteChartData.WorkTimes = noneRemoteWorkChartWorkTimes.ToArray();
 
             return new ResultDto<GetWorkTimeChartResultDto>(true, "")
             {
                 Data = new GetWorkTimeChartResultDto
                 {
                     ChartData = chartData,
+                    RemoteChartData = remoteChartData,
+                    NoneRemoteChartData = noneRemoteChartData,
                     UserId = request.UserId,
                     FinishDate = request.FinishDate,
                     StartDate = request.StartDate,
@@ -122,6 +140,8 @@ namespace Reports.Application.Services.ReportServices.GetWorkTimeChart
         public string UsersFirstName { get; set; }
         public string UsersLastName { get; set; }
         public ChartDataDto ChartData { get; set; }
+        public ChartDataDto RemoteChartData { get; set; }
+        public ChartDataDto NoneRemoteChartData { get; set; }
     }
 
     public class ChartDataDto

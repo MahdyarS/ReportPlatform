@@ -36,12 +36,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb-2">
                                     <diV class="row col-6">
                                         <div class="col-md-3">
                                             <label for="IsRemote">غیر حضوری</label>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-3 d-flex align-items-center">
                                             <input id="isRemote" asp-for="IsRemote" />
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
                                         :
                                     </b>
                                     <input asp-for="RemoteWorkedHour" class="form-control m-1" style="width:72px" type="number" min="0" max="23" value="@(Model?.RemoteWorkedHour ?? 0)" />
-                                    @*<span asp-validation-for="RemoteWorkedHour" class="text-danger"></span>*@
+                                    <span asp-validation-for="RemoteWorkedHour" class="text-danger"></span>
                                 </div>
                             </div>
 

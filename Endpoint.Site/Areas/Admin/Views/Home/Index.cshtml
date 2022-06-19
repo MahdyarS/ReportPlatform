@@ -68,8 +68,8 @@
                         <h4 class="card-title">آخرین گزارش های ثبت شده</h4>
                     </div>
                 </div>
-                <div class="card-body">
-                    <table class="table">
+                <div class="card-body d-flex justify-content-center">
+                    <table class="table table-responsive">
                         <thead>
                             <th>تاریخ</th>
                             <th>نام و نام خانوادگی</th>
@@ -108,7 +108,9 @@
             $(window).on("load", function () {
 
             var Dates = @Html.Raw(Json.Serialize(Model.ChartData.Dates));
-            var WorkHours = @Html.Raw(Json.Serialize(Model.ChartData.WorkTimes));
+            var totalWorkHours = @Html.Raw(Json.Serialize(Model.ChartData.WorkTimes));
+            var remoteWorkHours = @Html.Raw(Json.Serialize(Model.RemoteChartData.WorkTimes));
+            var noneRemoteWorkHours = @Html.Raw(Json.Serialize(Model.NoneRemoteChartData.WorkTimes));
 
             //Get the context of the Chart canvas element we want to select
             var ctx = $("#line-chart");
@@ -154,21 +156,46 @@
             };
 
             // Chart Data
-            var chartData = {
-                labels: Dates/*["تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی"]*/,
-                datasets: [{
-                    label: "مجموع ساعت کار",
-                    data: WorkHours/*[150, 59, 80, 81, 56, 55, 40]*/,
-                    fill: false,
-                    // borderDash: [5, 5],
-                    borderColor: "#666ee8",
-                    pointBorderColor: "#666ee8",
-                    pointBackgroundColor: "#FFF",
-                    pointBorderWidth: 2,
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 4,
-                }]
-            };
+        var chartData = {
+            labels: Dates,
+            datasets: [{
+                label: "ساعت کار حضوری",
+                data: noneRemoteWorkHours,
+                fill: false,
+                // borderDash: [5, 5],
+                borderColor: "#666ee8",
+                pointBorderColor: "#666ee8",
+                pointBackgroundColor: "#FFF",
+                pointBorderWidth: 2,
+                pointHoverBorderWidth: 2,
+                pointRadius: 4,
+            }, {
+
+                label: "ساعت کار غیرحضوری",
+                data: remoteWorkHours,
+                //lineTension: 0,
+                fill: false,
+                borderColor: "#FF4961",
+                pointBorderColor: "#FF4961",
+                pointBackgroundColor: "#FFF",
+                pointBorderWidth: 2,
+                pointHoverBorderWidth: 2,
+                pointRadius: 4,
+
+            }, {
+
+                label: "ساعت کار مجموع",
+                data: totalWorkHours,
+                fill: false,
+                borderDash: [5, 5],
+                borderColor: "#FF9149",
+                pointBorderColor: "#FF9149",
+                pointBackgroundColor: "#FFF",
+                pointBorderWidth: 2,
+                pointHoverBorderWidth: 2,
+                pointRadius: 4,
+            }]
+        };
 
             var config = {
                 type: 'line',

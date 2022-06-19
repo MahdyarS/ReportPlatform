@@ -33,7 +33,7 @@ namespace Reports.Application.Services.ReportServices.GetAllReportsOfOneDay
             {
                 Data = new GetAllReportsOfOneDayResultDto
                 {
-                    SearchKeyDate = request.Date,
+                    SearchKeyDate = (!String.IsNullOrEmpty(request.Date))? request.Date : DateTime.Now.ConvertMiladiToShamsi(),
                     RequestedPageIndex = request.RequestedPageIndex,
                     RequestedItemsInPageCount = request.ItemsInPageCount,
                     HasNoneRemoteReports = request.HasNoneRemoteReports,

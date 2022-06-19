@@ -27,15 +27,20 @@ namespace Reports.Application.Services.MutitaskServices.AdminPanelHomePageServic
             _getWorkTimeChart = getWorkTimeChart;
         }
 
+
         public AdminPanelHomePageViewModel Execute()
         {
+            var chartResult = _getWorkTimeChart.Execute(new GetWorkTimeChartRequestDto
+            {
+                StartDate = DateTime.Now.AddDays(-10).ConvertMiladiToShamsi(),
+                FinishDate = DateTime.Now.ConvertMiladiToShamsi(),
+            });
+
             var result = new AdminPanelHomePageViewModel
             {
-                ChartData = _getWorkTimeChart.Execute(new GetWorkTimeChartRequestDto
-                {
-                    StartDate = DateTime.Now.AddDays(-10).ConvertMiladiToShamsi(),
-                    FinishDate = DateTime.Now.ConvertMiladiToShamsi(),
-                }).Data.ChartData,
+                ChartData = chartResult.Data.ChartData,
+                RemoteChartData = chartResult.Data.RemoteChartData,
+                NoneRemoteChartData = chartResult.Data.NoneRemoteChartData,
                 LastReportsList = GetLastReports()
             };
             return result;
@@ -58,7 +63,8 @@ namespace Reports.Application.Services.MutitaskServices.AdminPanelHomePageServic
                 UsersFirstName = p.User.FirstName,
                 UsersLastName = p.User.LastName,
                 ReportsDetail = p.ReportsDetail,
-                WorkTime = TimeFormat.TotalMinutesToTimeFormat(p.TotalWorkedMinutes)
+                WorkTime = TimeFormat.TotalMinutesToTimeFormat(p.TotalWorkedMinutes),
+                
             }).ToList();
 
         }
@@ -79,5 +85,7 @@ namespace Reports.Application.Services.MutitaskServices.AdminPanelHomePageServic
     {
         public List<ReportToShowInAdminHomeDto> LastReportsList { get; set; }
         public ChartDataDto ChartData { get; set; }
+        public ChartDataDto RemoteChartData { get; set; }
+        public ChartDataDto NoneRemoteChartData { get; set; }
     }
 }
