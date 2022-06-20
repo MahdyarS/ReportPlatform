@@ -34,8 +34,8 @@ namespace Reports.Application.Services.ReportServices.AddNewReportService
             if (date > DateTime.Now)
                 return new ResultDto(false, "شما مجاز به ثبت گزارش روز های آینده نیستید!");
 
-            if (date < DateTime.Now.AddDays(-7))
-                return new ResultDto(false, "شما مجاز به ثبت گزارش در ناریخ های پیش از یک هفته قبل نیستید!");
+            //if (date < DateTime.Now.AddDays(-7))
+            //    return new ResultDto(false, "شما مجاز به ثبت گزارش در ناریخ های پیش از یک هفته قبل نیستید!");
 
 
 

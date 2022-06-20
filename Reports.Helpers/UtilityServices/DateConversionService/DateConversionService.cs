@@ -12,6 +12,21 @@ namespace Reports.Helpers.UtilityServices.DateConversionService
     {
         public static DateTime ShamsiStringToDateTime(this string shamsiDate)
         {
+            char[] persianDigits = { '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' };
+            char[] englishDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+            foreach (var character in shamsiDate)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (character == persianDigits[i])
+                    {
+                        shamsiDate = shamsiDate.Replace(character, englishDigits[i]);
+                        break;
+                    }
+                }
+            }
+
             string[] dateArray = shamsiDate.Split('/');
 
             PersianCalendar pc = new PersianCalendar();
