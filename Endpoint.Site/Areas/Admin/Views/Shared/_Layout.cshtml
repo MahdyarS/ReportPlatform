@@ -51,7 +51,7 @@
         <div data-active-color="white" data-background-color="aqua-marine" data-image="~/Admin/img/sidebar-bg/01.jpg" class="app-sidebar">
             <div class="sidebar-header">
                 <div class="logo clearfix">
-                    <a href="index-2.html" class="logo-text float-right">
+                    <a asp-controller="Home" asp-action="Index" class="logo-text float-right">
                         <div class="logo-img"><img src="~/Admin/img/logo.png" alt="Convex Logo" /></div><span style="font-size:80%" class="text align-middle">سیستم گزارش ها</span>
                     </a><a id="sidebarToggle" href="javascript:;" class="nav-toggle d-none d-sm-none d-md-none d-lg-block"><i data-toggle="expanded" class="ft-disc toggle-icon"></i></a><a id="sidebarClose" href="javascript:;" class="nav-close d-block d-md-block d-lg-none d-xl-none"><i class="ft-circle"></i></a>
                 </div>
@@ -110,7 +110,7 @@
                                     </a>
                                 </abbr>
                             </li>
-                            <li class="dropdown nav-item mt-1">
+@*                            <li class="dropdown nav-item mt-1">
                                 <a id="dropdownBasic2" href="#" data-toggle="dropdown" class="nav-link position-relative dropdown-toggle">
                                     <i class="ft-bell blue-grey darken-4"></i><span class="notification badge badge-pill badge-danger">4</span>
                                 </a>
@@ -191,14 +191,14 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="dropdown nav-item mr-0">
+*@                            <li class="dropdown nav-item mr-0">
                                 <a id="dropdownBasic3" href="#" data-toggle="dropdown" class="nav-link position-relative dropdown-user-link dropdown-toggle">
                                     گزینه ها
                                 </a>
                                 <div aria-labelledby="dropdownBasic3" class="dropdown-menu dropdown-menu-left">
                                     <div class="arrow_box_right">
-                                        <a href="chat.html" class="dropdown-item py-1"><i class="ft-message-circle ml-2"></i><span>چت من</span></a>
-                                        <a href="javascript:;" class="dropdown-item py-1">
+@*                                        <a href="chat.html" class="dropdown-item py-1"><i class="ft-message-circle ml-2"></i><span>چت من</span></a>
+*@                                        <a href="javascript:;" class="dropdown-item py-1">
                                             <div class="dropdown-divider"></div><a asp-area="" asp-controller="Account" asp-action='Logout' class="dropdown-item"><i class="ft-power ml-2"></i><span>خروج</span></a>
                                     </div>
                                 </div>
