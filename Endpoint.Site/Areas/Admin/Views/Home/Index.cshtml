@@ -43,54 +43,56 @@
     </div>
 </div>
 
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title-wrap bar-success">
-                        <h4 class="card-title">نمودار فعالیت های اخیر کارکنان</h4>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="card-block chartjs">
-                        <iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; inset: 0px;"></iframe>
-                        <canvas id="line-chart" height="400" width="724" style="display: block; width: 724px; height: 400px;"></canvas>
-                    </div>
-                </div>
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title-wrap bar-success">
+                <h4 class="card-title">نمودار فعالیت های اخیر کارکنان</h4>
             </div>
         </div>
-
-    
-
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title-wrap bar-success">
-                        <h4 class="card-title">آخرین گزارش های ثبت شده</h4>
-                    </div>
-                </div>
-                <div class="card-body d-flex justify-content-center">
-                    <table class="table table-responsive">
-                        <thead>
-                            <th>تاریخ</th>
-                            <th>نام و نام خانوادگی</th>
-                            <th>ساعت کار</th>
-                            <th>متن گزارش</th>
-                        </thead>
-                        <tbody>
-                    @foreach(var item in Model.LastReportsList)
-                    {
-                        <tr>
-                            <td>@item.Date</td>
-                            <td>@item.UsersFirstName @item.UsersLastName</td>
-                            <td>@item.WorkTime</td>
-                            <td class="col-8">@item.ReportsDetail</td>
-                        </tr>
-                    }
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card-body">
+            <div class="card-block chartjs">
+                <iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; inset: 0px;"></iframe>
+                <canvas id="line-chart" height="400" width="724" style="display: block; width: 724px; height: 400px;"></canvas>
             </div>
         </div>
+    </div>
+</div>
+
+
+
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title-wrap bar-success">
+                <h4 class="card-title">آخرین گزارش های ثبت شده</h4>
+            </div>
+        </div>
+        <div class="card-body d-flex justify-content-center">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <th>تاریخ</th>
+                    <th>نام و نام خانوادگی</th>
+                    <th>ساعت کار</th>
+                    <th>متن گزارش</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LastReportsList)
+                        {
+                            <tr>
+                                <td>@item.Date</td>
+                                <td>@item.UsersFirstName @item.UsersLastName</td>
+                                <td>@item.WorkTime</td>
+                                <td class="col-8">@item.ReportsDetail</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -98,7 +100,7 @@
 
 @section Scripts{
 
-    <script>
+<script>
 
 
     (function(window, document, $) {
@@ -139,6 +141,9 @@
                     }],
                     yAxes: [{
                         display: true,
+                        ticks: {
+                            beginAtZero: true
+                        },
                         gridLines: {
                             color: "#f3f3f3",
                             drawTicks: false,

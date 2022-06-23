@@ -9,8 +9,8 @@
     <form class-"col-md-4" asp-action="GetReportsOfEachDay">
         <label for="date">جستجوی گزارش ها در تاریخ:</label>
         <input id="date" class="date col-md-2 form-control" type="text" name="Date" value="@(Model.Data?.SearchKeyDate ?? String.Empty)" />
-        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data.HasNoneRemoteReports.ToString()" />
-        <input type="hidden" name="hasRemoteReports" value="@Model.Data.HasRemoteReports.ToString()" />
+        <input type="hidden" name="hasNoneRemoteReports" value="@Model.Data?.HasNoneRemoteReports.ToString()" />
+        <input type="hidden" name="hasRemoteReports" value="@Model.Data?.HasRemoteReports.ToString()" />
         <br />
         <button type="submit" class="btn btn-outline-success">جستجو</button>
     </form>
@@ -32,7 +32,7 @@
             </label>
             <input name="hasNoneRemoteReports" id="hasNoneRemoteValue" type="hidden" />
             <input name="hasRemoteReports" id="hasRemoteValue" type="hidden" />
-            <input name="date" type="hidden" value="@Model.Data.SearchKeyDate" />
+            <input name="date" type="hidden" value="@Model.Data?.SearchKeyDate" />
         </div>
         <button class="btn btn-outline-secondary mt-2" type="submit">اعمال فیلتر</button>
     </form>
@@ -176,8 +176,8 @@ else
 
 <script>
 
-    var hasRemote = @Json.Serialize(Model.Data.HasRemoteReports);
-    var hasNoneRemote = @Json.Serialize(Model.Data.HasNoneRemoteReports);
+    var hasRemote = @Json.Serialize(Model.Data?.HasRemoteReports ?? true);
+    var hasNoneRemote = @Json.Serialize(Model.Data?.HasNoneRemoteReports ?? true);
 
     $(document).ready(function(){
             $('#hasRemote').prop('checked',hasRemote);

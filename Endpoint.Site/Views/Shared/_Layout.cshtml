@@ -15,7 +15,7 @@
     <meta name="description" content="Convex admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Convex admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>eCommerce Dashboard - Convex bootstrap 4 admin dashboard template</title>
+    <title>سامانه ثبت گزارش کار</title>
     <link rel="apple-touch-icon" sizes="60x60" href="~/Admin/img/ico/apple-icon-60.html">
     <link rel="apple-touch-icon" sizes="76x76" href="~/Admin/img/ico/apple-icon-76.html">
     <link rel="apple-touch-icon" sizes="120x120" href="~/Admin/img/ico/apple-icon-120.html">
@@ -97,9 +97,117 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-faded">
             <div class="container-fluid">
-                <div class="navbar-header">
+                <div class="navbar-header d-flex">
                     <button type="button" data-toggle="collapse" class="navbar-toggle d-lg-none float-right"><span class="sr-only">تغییر ناوبری </span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-                    <span class="d-lg-none navbar-right navbar-collapse-toggle"><a class="open-navbar-container"><i class="ft-more-vertical"></i></a></span>
+                    <span class="d-lg-none navbar-right ms-auto d-flex flex-row align-items-center">
+                            @if (User.FindFirstValue(ClaimTypes.Role) == RoleName.Admin.ToString())
+                            {
+                                    <abbr title="پنل ادمین">
+                                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                                            @*                                                <i style="font-size:200%" class="bi bi-people-fill"></i>
+                                            *@
+                                            <i style="font-size:200%; color:black" class="fa-solid me-1 fa-user-secret"></i>
+                                        </a>
+                                    </abbr>
+
+                            }
+
+
+
+                            @*                            <li class="dropdown nav-item mt-1">
+                                <a id="dropdownBasic2" href="#" data-toggle="dropdown" class="nav-link position-relative dropdown-toggle">
+                                <i class="ft-bell blue-grey darken-4"></i><span class="notification badge badge-pill badge-danger">4</span>
+                                </a>
+                                <div class="notification-dropdown dropdown-menu dropdown-menu-left">
+                                <div class="arrow_box_right">
+                                <div class="noti-list">
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-share info float-right d-block font-medium-4 mt-2 ml-2"></i>
+                                <span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 info">
+                                سفارش جدید دریافت شده
+                                </span>
+                                <span class="noti-text">
+                                لورم ایپسوم متن ساختگی با تولید سادگی
+                                </span>
+                                </span>
+                                </a>
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-save warning float-right d-block font-medium-4 mt-2 ml-2">
+                                </i>
+                                <span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 warning">
+                                کاربر جدید ثبت شده است
+                                </span>
+                                <span class="noti-text">
+                                لورم ایپسوم متن ساختگی با تولید سادگی
+                                </span>
+                                </span>
+                                </a>
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-repeat danger float-right d-block font-medium-4 mt-2 ml-2">
+                                </i><span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 danger">
+                                سفارش جدید دریافت شده
+                                </span>
+                                <span class="noti-text">
+                                لورم ایپسوم متن ساختگی با تولید سادگی
+                                </span>
+                                </span>
+                                </a>
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-shopping-cart success float-right d-block font-medium-4 mt-2 ml-2">
+
+                                </i>
+                                <span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 success">مورد جدید در سبد خرید شما</span><span class="noti-text">لورم ایپسوم متن ساختگی با تولید سادگی</span>
+                                </span>
+                                </a>
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-heart info float-right d-block font-medium-4 mt-2 ml-2">
+
+                                </i>
+                                <span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 info">
+                                فروش جدید
+
+                                </span>
+                                <span class="noti-text">
+                                لورم ایپسوم متن ساختگی با تولید سادگی
+                                </span>
+                                </span>
+                                </a>
+                                <a class="dropdown-item noti-container py-2">
+                                <i class="ft-box warning float-right d-block font-medium-4 mt-2 ml-2">
+
+                                </i>
+                                <span class="noti-wrapper">
+                                <span class="noti-title line-height-1 d-block text-bold-400 warning">
+                                سفارش تحویل داده شده
+
+                                </span>
+                                <span class="noti-text">
+                                لورم ایپسوم متن ساختگی با تولید سادگی
+                                </span>
+                                </span>
+                                </a>
+                                </div>
+                                </div>
+                                </div>
+                                </li>
+                            *@
+                                <a id="dropdownBasic3" href="#" data-toggle="dropdown" class="nav-link position-relative dropdown-user-link dropdown-toggle">
+                                    گزینه ها
+                                </a>
+                                <div aria-labelledby="dropdownBasic3" class="dropdown-menu m-2 dropdown-menu-left">
+                                    <div class="arrow_box_right">
+                                        <a asp-area="" asp-controller="Account" asp-action="Profile" class="dropdown-item py-1"><i class="ft-edit ml-2"></i><span>پروفایل من</span></a>
+                                        @*                                        <a href="chat.html" class="dropdown-item py-1"><i class="ft-message-circle ml-2"></i><span>چت من</span></a>
+                                        *@                                        <a href="javascript:;" class="dropdown-item py-1">
+                                            <div class="dropdown-divider"></div><a asp-area="" asp-controller="Account" asp-action='Logout' class="dropdown-item"><i class="ft-power ml-2"></i><span>خروج</span></a>
+                                    </div>
+                                </div>
+                    </span>
                 </div>
                 <div class="navbar-container">
                     <div id="navbarSupportedContent" class="collapse navbar-collapse">

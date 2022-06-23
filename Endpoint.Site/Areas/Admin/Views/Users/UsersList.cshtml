@@ -39,7 +39,7 @@
     return;
 }
     <div class="row">
-        <div class="col-sm-12 col-md-11">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title-wrap bar-success">
@@ -54,8 +54,9 @@
     </div>
 
 }
-<table class="table table-responsive">
 
+<div class="table-responsive p-2">
+    <table class="table">
     <thead>
         <tr>
             <th scope="col">نام</th>
@@ -76,12 +77,21 @@
                 <td class="col-2">@item.Position</td>
                 <td class="col-2">@item.PhoneNumber</td>
                 <td class="col-6">
-                    @*<button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#UserEditModal">جزئیات</button>*@
-
-                    <a asp-area="Admin" asp-controller="Users" asp-action="UserInformation" asp-route-UserId="@item.UserId"><button class="btn btn-info">اطلاعات</button></a>
+@*                  <div class="dropdown">
+*@                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        گزینه ها
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="UserInformation" asp-route-UserId="@item.UserId">اطلاعات</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Reports" asp-action="ShowUserPeriods" asp-route-UserId="@item.UserId" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName">بازه ها</a></li>
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName" asp-route-UserId="@item.UserId">گزارش ها</a></li>
+                          </ul>
+@*                   </div>
+*@
+@*                    <a asp-area="Admin" asp-controller="Users" asp-action="UserInformation" asp-route-UserId="@item.UserId"><button class="btn btn-info">اطلاعات</button></a>
                     <a asp-area="Admin" asp-controller="Reports" asp-action="ShowUserPeriods" asp-route-UserId="@item.UserId" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName"><button class="btn btn-info">بازه ها</button></a>
                     <a asp-area="Admin" asp-controller="Reports" asp-action="GetOneUsersReports" asp-route-UsersFirstName="@item.FName" asp-route-UsersLastName="@item.LName" asp-route-UserId="@item.UserId"><button class="btn btn-info">گزارش ها</button></a>
-
+*@
                     @if (item.IsDisabled)
                     {
                         <button class="btn btn-secondary disableInable toggle">فعال کردن</button>
@@ -98,8 +108,8 @@
         }
 
     </tbody>
-</table>
-
+    </table>
+</div>
 
 
                 </div>

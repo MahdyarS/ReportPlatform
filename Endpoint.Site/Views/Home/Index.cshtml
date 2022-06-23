@@ -53,20 +53,20 @@
                     <h4 class="card-title" id="basic-layout-card-center">گزارش روزانه</h4>
                 </div>
                 <p class="mb-0">
-                    <p class="textalign">
-                            @if (Model.SubmittedTodaysReport)
-                            {
-                        <p>
-                            گزارش امروز شما با موفقیت ثبت شده است <i style="color:green" class="fas fa-check"></i>
-                        </p>
-                            }
-                            else
-                            {
-                        <p>
-                            شما هنوز گزارش امروز خود را ثبت نکرده اید <i style="color:red" class="fas fa-exclamation-triangle"></i>
-                        </p>
-                            }
+                <p class="textalign">
+                        @if (Model.SubmittedTodaysReport)
+                        {
+                    <p>
+                        گزارش امروز شما با موفقیت ثبت شده است <i style="color:green" class="fas fa-check"></i>
                     </p>
+                        }
+                        else
+                        {
+                    <p>
+                        شما هنوز گزارش امروز خود را ثبت نکرده اید <i style="color:red" class="fas fa-exclamation-triangle"></i>
+                    </p>
+                        }
+                </p>
                 </p>
             </div>
             <div class="card-body">
@@ -79,16 +79,13 @@
 
                             <div class="form-body">
 
-                                <div class="row mb-2">
-                                    <diV class="row col-6">
-                                        <div class="col-3">
-                                            <label for="IsRemote">غیر حضوری</label>
-                                        </div>
-                                        <div class="col-3 d-flex align-items-center">
-                                            <input id="isRemote" type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
+                                <div class="mb-2">
+                                    <div class="form-check p-0 d-flex align-items-center">
+                                        <input class="me-2" id="isRemote" type="checkbox" data-val="true" data-val-required="این فیلد الزامیست!" id="IsRemote" name="IsRemote" value="true">
 
-                                        </div>
+                                        <label for="IsRemote">غیرحضوری</label>
                                     </div>
+
                                 </div>
 
                                 <div id="noneRemote" class="row">
@@ -110,29 +107,29 @@
                                     </div>
                                 </div>
 
-                            <div id="remote" class="row d-none">
-                                <label>مجموع ساعت کار</label>
-                                <div class="col-6 col-md-2 d-flex align-items-center">
-                                    <input name="RemoteWorkedMinute" class="form-control m-1" style="width:72px" type="number"  min="0" max="59" value="0" />
-                                    <b>
-                                        :
-                                    </b>
-                                    <input name="RemoteWorkedHour" class="form-control m-1" style="width:72px" type="number" min="0" max="23" value="0" />
+                                <div id="remote" class="row d-none">
+                                    <label>مجموع ساعت کار</label>
+                                    <div class="col-6 col-md-2 d-flex align-items-center">
+                                        <input name="RemoteWorkedMinute" class="form-control m-1" style="width:72px" type="number" min="0" max="59" value="0" />
+                                        <b>
+                                            :
+                                        </b>
+                                        <input name="RemoteWorkedHour" class="form-control m-1" style="width:72px" type="number" min="0" max="23" value="0" />
+                                    </div>
                                 </div>
-                            </div>
 
-								<div class="form-group mt-3">
-									<label for="issueinput8">متن گزارش</label>
-									<textarea id="issueinput8" rows="8" class="form-control" name="ReportsDetail" data-toggle="tooltip" data-trigger="hover" data-placement="top"
-									 data-title="Comments"></textarea>
-								</div>
+                                <div class="form-group mt-2">
+                                    <label for="issueinput8">متن گزارش</label>
+                                    <textarea id="issueinput8" rows="8" class="form-control" name="ReportsDetail" data-toggle="tooltip" data-trigger="hover" data-placement="top"
+                                          data-title="Comments"></textarea>
+                                </div>
 
                                 <div class="form-actions center">
                                     <button type="submit" class="btn btn-success">
                                         <i class="icon-note"></i> ثبت گزارش
                                     </button>
                                 </div>
-                                </div>
+                            </div>
                         </form>
 
                     }
@@ -140,21 +137,21 @@
             </div>
         </div>
     </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title-wrap bar-success">
-                        <h4 class="card-title">نمودار فعالیت های اخیر من</h4>
-                    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-wrap bar-success">
+                    <h4 class="card-title">نمودار فعالیت های اخیر من</h4>
                 </div>
-                <div class="card-body">
-                    <div class="card-block chartjs">
-                        <iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; inset: 0px;"></iframe>
-                        <canvas id="line-chart" height="400" width="724" style="display: block; width: 724px; height: 400px;"></canvas>
-                    </div>
+            </div>
+            <div class="card-body">
+                <div class="card-block chartjs">
+                    <iframe class="chartjs-hidden-iframe" tabindex="-1" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; inset: 0px;"></iframe>
+                    <canvas id="line-chart" height="400" width="724" style="display: block; width: 724px; height: 400px;"></canvas>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
 
@@ -167,7 +164,7 @@
 
 <script>
 
-    
+
 
     $('#isRemote').on('change',function(){
 
@@ -185,7 +182,7 @@
 
 </script>
 
-    <script>
+<script>
 
 
     (function(window, document, $) {
@@ -224,6 +221,9 @@
                     }],
                     yAxes: [{
                         display: true,
+                        ticks: {
+                            beginAtZero: true
+                        },
                         gridLines: {
                             color: "#f3f3f3",
                             drawTicks: false,
